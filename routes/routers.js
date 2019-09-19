@@ -19,11 +19,11 @@ module.exports = function (app) {
   app.get("/news", Api.news);
   app.get("/newsDetail", Api.newsDetail);
   app.get("/topics", Api.topics);
-  app.get("/topicDetail", Api.topicDetail);
+  app.get("/topicDetail", Api.topicDetail);*/
   app.get("/todayHot", Api.todayHot);
   app.get("/sliderRecom", Api.sliderRecom);
   app.get("/monthRank", Api.monthRank);
-  app.get("/newAnimate", Api.newAnimate); */
+  app.get("/newAnimate", Api.newAnimate); 
   
   app.get("/chinaAnimate", Api.chinaAnimate);
   app.get("/animatePlan", Api.animatePlan);
