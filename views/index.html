@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>红旅动漫接口文档(个人开发,非官方)</title>
+  <title>BimiBimi动漫接口文档(个人开发,非官方)</title>
   <link rel="icon" href="//tomoya.cn/favicon.ico">
   <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
   <link href="/css/style.css" rel="stylesheet">
@@ -12,170 +12,298 @@
   <div class="row">
     <div class="col-md-7">
       <div class="text-center">
-        <h1>红旅动漫接口文档(个人开发,非官方)</h1>
-        <h4><a href="http://tomoya.cn" target="_blank">@朋也</a></h4>
+        <h1>BimiBimi动漫接口文档(个人开发,非官方)</h1>
+        <h4><a href="https://chengzc.club" target="_blank">@Chengzc</a></h4>
       </div>
       <div class="panel panel-default">
         <div class="panel-body">
           <h3>轮播图</h3>
           <h4>GET: /carousel</h4>
           <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/" target="_blank">http://www.hltm.tv/</a>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/" target="_blank">http://www.bimibimi.tv/</a>
           </p>
           <p>
             示例: <a href="/carousel" target="_blank">/carousel</a>
           </p>
           <hr>
+		  <h3>轮播后推荐</h3>
+		  <h4>GET: /sliderRecom</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/" target="_blank">http://www.bimibimi.tv/</a>
+		  </p>
+		  <p>
+		    示例: <a href="/sliderRecom" target="_blank">/sliderRecom</a>
+		  </p>
+		  <hr>
           <h3>一周更新(节目单)</h3>
           <h4>GET: /weekUpdate</h4>
           <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/" target="_blank">http://www.hltm.tv/</a>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/" target="_blank">http://www.bimibimi.tv/</a>
           </p>
           <p>
             示例: <a href="/weekUpdate" target="_blank">/weekUpdate</a>
           </p>
           <hr>
-          <h3>新增/推荐 连载/完结 动漫</h3>
-          <h4>GET: /addRecommend</h4>
+          <h3>今日热播</h3>
+          <h4>GET: /todayHot</h4>
           <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/" target="_blank">http://www.hltm.tv/</a>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/" target="_blank">http://www.bimibimi.tv/</a>
           </p>
           <p>
-            示例: <a href="/addRecommend" target="_blank">/addRecommend</a>
-          </p>
-          <hr>
-          <h3>最新更新</h3>
-          <h4>GET: /recentUpdate</h4>
-          <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/" target="_blank">http://www.hltm.tv/</a>
-          </p>
-          <p>
-            示例: <a href="/recentUpdate" target="_blank">/recentUpdate</a>
+            示例: <a href="/todayHot" target="_blank">/todayHot</a>
           </p>
           <hr>
-          <h3>热门新番</h3>
-          <h4>GET: /hotNewAnimate</h4>
+          <h3>月排行榜</h3>
+          <h4>GET: /monthRank</h4>
           <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/" target="_blank">http://www.hltm.tv/</a>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/" target="_blank">http://www.bimibimi.tv/</a>
           </p>
           <p>
-            示例: <a href="/hotNewAnimate" target="_blank">/hotNewAnimate</a>
-          </p>
-          <hr>
-          <h3>2016年7月新番排行榜/2016年4月新番排行榜/动漫总排行榜/动漫资讯</h3>
-          <h4>GET: /ranking</h4>
-          <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/" target="_blank">http://www.hltm.tv/</a>
-          </p>
-          <p>
-            示例: <a href="/ranking" target="_blank">/ranking</a>
+            示例: <a href="/monthRank" target="_blank">/monthRank</a>
           </p>
           <hr>
-          <h3>搜索</h3>
-          <h4>GET: /search</h4>
+          <h3>新番发送</h3>
+          <h4>GET: /newAnimate</h4>
           <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/search/?k=海贼王" target="_blank">http://www.hltm.tv/search/?k=海贼王</a>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/" target="_blank">http://www.bimibimi.tv/</a>
+          </p>
+          <p>
+            示例: <a href="/newAnimate" target="_blank">/newAnimate</a>
+          </p>
+          <hr>
+          <h3>国产动漫</h3>
+          <h4>GET: /chinaAnimate</h4>
+          <p>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/" target="_blank">http://www.bimibimi.tv/</a>
+          </p>
+          <p>
+            示例: <a href="/chinaAnimate" target="_blank">/chinaAnimate</a>
+          </p>
+		  
+          <hr>
+          <h3>番组计划</h3>
+          <h4>GET: /animatePlan</h4>
+          <p>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/" target="_blank">http://www.bimibimi.tv/</a>
+          </p>
+          <p>
+            示例: <a href="/animatePlan" target="_blank">/animatePlan</a>
+          </p>
+          <hr>
+          <h3>剧场动画</h3>
+          <h4>GET: /animateMovie</h4>
+          <p>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/" target="_blank">http://www.bimibimi.tv/</a>
+          </p>
+          <p>
+            示例: <a href="/animateMovie" target="_blank">/animateMovie</a>
+          </p>
+          <hr>
+          <h3>影视</h3>
+          <h4>GET: /Movies</h4>
+          <p>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/" target="_blank">http://www.bimibimi.tv/</a>
+          </p>
+          <p>
+            示例: <a href="/Movies" target="_blank">/Movies</a>
+          </p>
+          <hr>
+          <h3>新番发送（日漫时间2000-2019）</h3>
+          <h4>GET: /yearAnimateList</h4>
+          <p>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/vodshow/riman-----------2019" target="_blank">http://www.bimibimi.tv/vodshow/riman-----------2019</a>
           </p>
           <ul>
-            <li>k <code>String</code> 关键字</li>
-            <li>page <code>Number</code> 页数</li>
+            <li>ver <code>String</code> 排行：time(时间),hits(人气),score(评分)</li>
+			<li>letter <code>String</code>A-Z 0-9</li>
+			<li>sort <code>String</code> 全部,热血,冒险,搞笑,运动,竞技,装逼,剧情,青春,后宫,校园,励志,恋爱,百合,耽美,战斗,机战,科幻,萝莉,奇幻,魔法,动画,治愈,美食,萌系,偶像,泡面,漫改,轻改,催泪,日常,少儿,少女,社团,推理,乙女,其他</li>
+			<li>page <code>String</code> 页数</li>
+			<li>week <code>String</code> 全部,周一,周二,周三,周四,周五,周六,周日</li>
+			<li>year <code>String</code> 2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008,2007,2006,2005,2004,2003,2002,2001,2000</li>
           </ul>
           <p>
-            示例: <a href="/search?k=海贼王&page=1" target="_blank">/search</a>
+            示例: <a href="/yearAnimateList" target="_blank">/yearAnimateList</a>
           </p>
           <hr>
-          <h3>动漫详情</h3>
-          <h4>GET: /detail</h4>
+          <h3>国漫年度动漫列表</h3>
+          <h4>GET: /guoManAnimateList</h4>
           <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/view/972.html" target="_blank">http://www.hltm.tv/view/972.html</a>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/vodshow/guoman-----------2019/" target="_blank">http://www.bimibimi.tv/vodshow/guoman-----------2019/</a>
+          </p>
+		  <ul>
+		    <li>ver <code>String</code> 排行：time(时间),hits(人气),score(评分)</li>
+			<li>letter <code>String</code>A-Z 0-9</li>
+			<li>sort <code>String</code> 全部,热血,冒险,搞笑,运动,竞技,装逼,剧情,青春,后宫,校园,励志,恋爱,百合,耽美,战斗,机战,科幻,萝莉,奇幻,魔法,动画,治愈,美食,萌系,偶像,泡面,漫改,轻改,催泪,日常,少儿,少女,社团,推理,乙女,其他</li>
+			<li>page <code>String</code> 页数</li>
+			<li>week <code>String</code> 全部,周一,周二,周三,周四,周五,周六,周日</li>
+			<li>year <code>String</code> 2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008,2007,2006,2005,2004,2003,2002,2001,2000</li>
+		  </ul>
+          <p>
+            示例: <a href="/guoManAnimateList" target="_blank">/guoManAnimateList</a>
+          </p>
+          <hr>
+          <h3>番组年度动漫列表</h3>
+          <h4>GET: /fanZuAnimateList</h4>
+          <p>
+            对于BimiBimi动漫页面:
+            <a href="http://www.bimibimi.tv/vodshow/fanzu-----------2019/" target="_blank">http://www.bimibimi.tv/vodshow/fanzu-----------2019/</a>
           </p>
           <ul>
-            <li>url <code>String</code> 对于红旅网站动漫详情页面的url(需要Encoder)</li>
+            <li>ver <code>String</code> 排行：time(时间),hits(人气),score(评分)</li>
+			<li>letter <code>String</code>A-Z 0-9</li>
+			<li>sort <code>String</code> 全部,热血,冒险,搞笑,运动,竞技,装逼,剧情,青春,后宫,校园,励志,恋爱,百合,耽美,战斗,机战,科幻,萝莉,奇幻,魔法,动画,治愈,美食,萌系,偶像,泡面,漫改,轻改,催泪,日常,少儿,少女,社团,推理,乙女,其他</li>
+			<li>page <code>String</code> 页数</li>
+			<li>week <code>String</code> 全部,周一,周二,周三,周四,周五,周六,周日</li>
+			<li>year <code>String</code> 2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008,2007,2006,2005,2004,2003,2002,2001,2000</li>
           </ul>
           <p>
-            示例: <a href="/detail?url=http%3A%2F%2Fwww.hltm.tv%2Fview%2F12412.html" target="_blank">/detail</a>
+            示例: <a href="/fanZuAnimateList" target="_blank">/fanZuAnimateList</a>
           </p>
-          <hr>
-          <h3>连载动漫/完结动漫</h3>
-          <h4>GET: /list</h4>
-          <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/list/7.html" target="_blank">http://www.hltm.tv/list/7.html</a>
-          </p>
-          <ul>
-            <li>ver <code>Number</code> 版本, 全部:"" TV番组:1 OVA:2 OAD:3 剧场版:4 特别版:5 真人版:6 动画版:7 其他:100</li>
-            <li>letter <code>String</code> 字母 全部:"" A:A B:B...以此类推 0-9:100</li>
-            <li>sort <code>Number</code> 排序方式 最新更新:"" 热门播放:1</li>
-            <li>tab <code>Number</code> 类型 连载动漫:7 完结动漫:18</li>
-            <li>page <code>Number</code> 页数</li>
-          </ul>
-          <p>
-            示例: <a href="/list" target="_blank">/list</a>
-          </p>
-          <hr>
-          <h3>新闻列表</h3>
-          <h4>GET: /news</h4>
-          <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/list/26.html" target="_blank">http://www.hltm.tv/list/26.html</a>
-          </p>
-          <ul>
-            <li>page <code>Number</code> 页数</li>
-          </ul>
-          <p>
-            示例: <a href="/news" target="_blank">/news</a>
-          </p>
-          <hr>
-          <h3>新闻详情</h3>
-          <h4>GET: /newsDetail</h4>
-          <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/new/30.html" target="_blank">http://www.hltm.tv/new/30.html</a>
-          </p>
-          <ul>
-            <li>url <code>String</code> 对于红旅网站新闻详情页面的url(需要Encoder)</li>
-          </ul>
-          <p>
-            示例: <a href="/newsDetail?url=http%3A%2F%2Fwww.hltm.tv%2Fnew%2F30.html" target="_blank">/newsDetail</a>
-          </p>
-          <hr>
-          <h3>专题列表</h3>
-          <h4>GET: /topics</h4>
-          <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/list/27.html" target="_blank">http://www.hltm.tv/list/27.html</a>
-          </p>
-          <p>
-            示例: <a href="/topics" target="_blank">/topics</a>
-          </p>
-          <hr>
-          <h3>专题详情列表</h3>
-          <h4>GET: /topicDetail</h4>
-          <p>
-            对于红旅动漫页面:
-            <a href="http://www.hltm.tv/topiclist/201607yuexinfan.html" target="_blank">http://www.hltm.tv/topiclist/201607yuexinfan.html</a>
-          </p>
-          <ul>
-            <li>page <code>Number</code> 页数</li>
-            <li>url <code>String</code> 对于红旅网站专题详情页面的url(需要Encoder)</li>
-          </ul>
-          <p>
-            示例: <a href="/topicDetail?url=http%3A%2F%2Fwww.hltm.tv%2Ftopiclist%2F201607yuexinfan.html" target="_blank">/topicDetail</a>
-          </p>
+		  
+		  <hr>
+		  <h3>剧场动画年度动漫列表</h3>
+		  <h4>GET: /juChangAnimateList</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/vodshow/juchang-----------2019/" target="_blank">http://www.bimibimi.tv/vodshow/juchang-----------2019/</a>
+		  </p>
+		  <ul>
+		    <li>ver <code>String</code> 排行：time(时间),hits(人气),score(评分)</li>
+			<li>letter <code>String</code>A-Z 0-9</li>
+			<li>sort <code>String</code> 全部,热血,冒险,搞笑,运动,竞技,装逼,剧情,青春,后宫,校园,励志,恋爱,百合,耽美,战斗,机战,科幻,萝莉,奇幻,魔法,动画,治愈,美食,萌系,偶像,泡面,漫改,轻改,催泪,日常,少儿,少女,社团,推理,乙女,其他</li>
+			<li>page <code>String</code> 页数</li>
+			<li>week <code>String</code> 全部,周一,周二,周三,周四,周五,周六,周日</li>
+			<li>year <code>String</code> 2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008,2007,2006,2005,2004,2003,2002,2001,2000</li>
+		  </ul>
+		  <p>
+		    示例: <a href="/juChangAnimateList" target="_blank">/juChangAnimateList</a>
+		  </p>
+		  <hr>
+		  <h3>影视年度列表</h3>
+		  <h4>GET: /moveAnimateList</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/vodshow/move-----------2019/" target="_blank">http://www.bimibimi.tv/vodshow/move-----------2019/</a>
+		  </p>
+		  <ul>
+		    <li>ver <code>String</code> 排行：time(时间),hits(人气),score(评分)</li>
+			<li>letter <code>String</code>A-Z 0-9</li>
+			<li>sort <code>String</code> 全部,热血,冒险,搞笑,运动,竞技,装逼,剧情,青春,后宫,校园,励志,恋爱,百合,耽美,战斗,机战,科幻,萝莉,奇幻,魔法,动画,治愈,美食,萌系,偶像,泡面,漫改,轻改,催泪,日常,少儿,少女,社团,推理,乙女,其他</li>
+			<li>page <code>String</code> 页数</li>
+			<li>week <code>String</code> 全部,周一,周二,周三,周四,周五,周六,周日</li>
+			<li>year <code>String</code> 2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008,2007,2006,2005,2004,2003,2002,2001,2000</li>
+		  </ul>
+		  <p>
+		    示例: <a href="/moveAnimateList" target="_blank">/moveAnimateList</a>
+		  </p>
+		  <hr>
+		  <h3>资讯</h3>
+		  <h4>GET: /zixun</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/arttype/zixun/" target="_blank">http://www.bimibimi.tv/arttype/zixun/</a>
+		  </p>
+		  <ul>
+		  	<li>page <code>String</code> 页数</li>
+		  </ul>
+		  <p>
+		    示例: <a href="/zixun" target="_blank">/zixun</a>
+		  </p>
+		  
+		  <hr>
+		  <h3>资讯详情</h3>
+		  <h4>GET: /artDetail</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/artdetail-3/" target="_blank">http://www.bimibimi.tv/artdetail-3/</a>
+		  </p>
+		  <ul>
+		  	<li>page <code>String</code> 咨询标识</li>
+		  </ul>
+		  <p>
+		    示例: <a href="/artDetail" target="_blank">/artDetail</a>
+		  </p>
+		  <hr>
+		  <h3>动漫详情</h3>
+		  <h4>GET: /animateDetail</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/bangumi/bi/97/" target="_blank">http://www.bimibimi.tv/bangumi/bi/97/</a>
+		  </p>
+		  <ul>
+		  	<li>page <code>String</code> 页数</li>
+		  </ul>
+		  <p>
+		    示例: <a href="/animateDetail" target="_blank">/animateDetail</a>
+		  </p>
+		  <hr>
+		  <h3>播放相关</h3>
+		  <h4>GET: /animatePlay</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/bangumi/97/play/1/61/" target="_blank">http://www.bimibimi.tv/bangumi/97/play/1/61/</a>
+		  </p>
+		  <ul>
+		  	<li>animateid <code>String</code> 动漫标识</li>
+			<li>season <code>String</code> 季度</li>
+			<li>playnum <code>String</code> 第几集</li>
+		  </ul>
+		  <p>
+		    示例: <a href="/animatePlay" target="_blank">/animatePlay</a>
+		  </p>
+		  <hr>
+		  <h3>最新上映</h3>
+		  <h4>GET: /latestShowAnimate</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/label/new/" target="_blank">http://www.bimibimi.tv/label/new/</a>
+		  </p>
+		  <p>
+		    示例: <a href="/latestShowAnimate" target="_blank">/latestShowAnimate</a>
+		  </p>
+		  <hr>
+		  <h3>排行榜</h3>
+		  <h4>GET: /animateRank</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/label/top/" target="_blank">http://www.bimibimi.tv/label/top/</a>
+		  </p>
+		  <p>
+		    示例: <a href="/animateRank" target="_blank">/animateRank</a>
+		  </p>
+		  
+		  <hr>
+		  <h3>搜索</h3>
+		  <h4>GET: /searchByKeyWord</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/vod/search/page/2/" target="_blank">http://www.bimibimi.tv/vod/search/page/2/</a>
+		  </p>
+		  <ul>
+		    <li>keyword <code>String</code> 关键字</li>
+		    <li>page <code>Number</code> 页数</li>
+		  </ul>
+		  <p>
+		    示例: <a href="/searchByKeyWord?page=1&keyword=火影" target="_blank">/searchByKeyWord</a>
+		  </p>
         </div>
       </div>
-      <blockquote>
-        本站整理的红旅动漫网接口目的是为会APP开发的程序员使用,希望红旅也有APP可以使用,请勿用于其他用途,谢谢!
+      <!-- <blockquote>
+        本站整理的BimiBimi动漫网接口目的是为会APP开发的程序员使用,希望红旅也有APP可以使用,请勿用于其他用途,谢谢!
         <br> 如有问题,请邮件朋也 1956587218@qq.com
-      </blockquote>
+      </blockquote> -->
     </div>
   </div>
   <div style="display:none;">
