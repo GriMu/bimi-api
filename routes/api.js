@@ -1216,6 +1216,7 @@ exports.animatePlay = function(req, res) {
 	var result = {};
 	var playlist = [];
 	var recommendlist = [];
+	var player_data ={};
 	try {
 		url = encodeURI(url.replace("$animateid", animateid).replace("$season", season).replace("$playnum", playnum));
 		console.log(url);
@@ -1224,16 +1225,17 @@ exports.animatePlay = function(req, res) {
 				var $ = cheerio.load(body);
 				var videodata = $("#video").text();
 				var playdata = videodata.substring(videodata.indexOf("=")+1,videodata.length);
-				playdata = JSON.parse(playdata);
-				if (playdata.encrypt == '1') {
+				player_data = JSON.parse(playdata);
+				result.player_data = player_data;
+				/* if (playdata.encrypt == '1') {
 					playdata.url = unescape(playdata.url);
 					playdata.url_next = unescape(playdata.url_next)
 				} else if (playdata.encrypt == '2') {
 					playdata.url = unescape(base64decode(playdata.url));
 					playdata.url_next = unescape(base64decode(playdata.url_next))
-				}
+				} 
 				result.url = getRealURL(playdata.url);//播放地址
-				result.nexturl = getRealURL(playdata.url_next);//下一集
+				result.nexturl = getRealURL(playdata.url_next);//下一集*/
 					
 				// result.playuri= $("#video").text();
 				result.name= $(".v_path").find("a").last().text();
