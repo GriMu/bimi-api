@@ -41,4 +41,5 @@ module.exports = function (app) {
   app.get("/latestShowAnimate", Api.latestShowAnimate);
   app.get("/animateRank", Api.animateRank);
   app.get("/searchByKeyWord", Api.searchByKeyWord);
+  app.get("/animatePlayByPT", Api.animatePlayByPT);
 };

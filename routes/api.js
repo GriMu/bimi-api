@@ -1,6 +1,7 @@
 var request = require("request");
 var cheerio = require("cheerio");
 var Iconv = require('iconv-lite');
+const puppeteer = require('puppeteer');
 
 //轮播图
 // http://www.bimibimi.tv/template/bimibimi_pc/images/grey.png --等待加载图
@@ -1122,7 +1123,6 @@ exports.animateDetail = function(req, res) {
 	var sortlsit = [];
 	var directorlsit = [];
 	var arealsit = [];
-	var playlist = [];
 	var recommendlist = [];
 	try {
 		url = encodeURI(url.replace("$page", page));
@@ -1172,15 +1172,20 @@ exports.animateDetail = function(req, res) {
 				result.comment= $(".txt_list li").eq(8).find("span").text();//评论
 				result.updatetime= $(".txt_list li").eq(9).text();//最近更新
 				result.intro= $(".txt_list li").eq(10).find("p").text();//简介
-				
-				$(".player_list").find("a").map(function(i, v) {
-					playlist.push({
-						url: "http://www.bimibimi.tv/"+ $(v).attr("href"),
-						playnum: $(v).text(),
+				// console.log($(".player_list").length);
+				var plegth = $(".player_list").length;
+				var plists = [];
+				for (var i = 0; i < plegth; i++) {
+					var playlist = [];
+					$(".player_list").eq(i).find("a").map(function(i, v) {
+						playlist.push({
+							url: "http://www.bimibimi.tv/"+ $(v).attr("href"),
+							playnum: $(v).text(),
+						});
 					});
-				});
-				result.playlist= playlist;//播放列表
-				
+					plists.push(playlist);
+				}
+				result.playlist= plists;//播放列表
 				$(".drama-module li").map(function(i, v) {
 					var umguri = $(v).find("img").attr("data-original");
 					if (umguri.indexOf("http") == -1) {
@@ -1214,7 +1219,6 @@ exports.animatePlay = function(req, res) {
 	var playnum = req.query.page || 1;//第几集
 	var url = "http://www.bimibimi.tv/bangumi/$animateid/play/$season/$playnum/";
 	var result = {};
-	var playlist = [];
 	var recommendlist = [];
 	var player_data ={};
 	try {
@@ -1224,6 +1228,7 @@ exports.animatePlay = function(req, res) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
 				var videodata = $("#video").text();
+				console.log(body);
 				var playdata = videodata.substring(videodata.indexOf("=")+1,videodata.length);
 				player_data = JSON.parse(playdata);
 				result.player_data = player_data;
@@ -1238,15 +1243,23 @@ exports.animatePlay = function(req, res) {
 				result.nexturl = getRealURL(playdata.url_next);//下一集*/
 					
 				// result.playuri= $("#video").text();
+				
 				result.name= $(".v_path").find("a").last().text();
 				result.curnum= playnum;
-				$(".player_list").find("a").map(function(i, v) {
-					playlist.push({
-						url: "http://www.bimibimi.tv/"+ $(v).attr("href"),
-						playnum: $(v).text(),
+				var plegth = $(".player_list").length;
+				var plists = [];
+				
+				for (var i = 0; i < plegth; i++) {
+					var playlist = [];
+					$(".player_list").eq(i).find("a").map(function(i, v) {
+						playlist.push({
+							url: "http://www.bimibimi.tv/"+ $(v).attr("href"),
+							playnum: $(v).text(),
+						});
 					});
-				});
-				result.playlist= playlist;//播放列表
+					plists.push(playlist);
+				}
+				result.playlist= plists;//播放列表
 				
 				$(".drama-module li").map(function(i, v) {
 					var umguri = $(v).find("img").attr("data-original");
@@ -1529,7 +1542,153 @@ exports.searchByKeyWord = function(req, res) {
 	}	
 };
 
+//通过 Puppeteer 爬取动漫地址
+exports.animatePlayByPT = function(req, res) {
+	var animateid = req.query.animateid || 1;//动漫标识
+	var season = req.query.season || 1;//季度
+	var playnum = req.query.page || 1;//第几集
+	var url = "http://www.bimibimi.tv/bangumi/$animateid/play/$season/$playnum/";
+	var result = {};
+	var playlist = [];
+	var recommendlist = [];
+	var player_data ={};
+	try {
+		url = encodeURI(url.replace("$animateid", animateid).replace("$season", season).replace("$playnum", playnum));
+		console.log(url);
+		// 等待3000毫秒
+		 const sleep = time => new Promise(resolve => {
+		     setTimeout(resolve, time);
+		 })
+		// const url1 = 'https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8&sort=rank&page_limit=20&page_start=0';
+		;(async() => {
+		    console.log('Start visit');
+		
+		    // 启动一个浏览器
+		    const brower = await puppeteer.launch({
+		        args: ['--no-sandbox'],
+		        dumpio: false
+		    });
+		
+		    const page = await brower.newPage()   // 开启一个新页面
+		    // 去豆瓣那个页面
+		    await page.goto(url, {
+		        waitUntil: 'networkidle2'  // 网络空闲说明已加载完毕
+		    });
+		
+		    await sleep(3000);
+			// console.log(page)
+		    // 页面加载更多按钮出现
+		    await page.waitForSelector('#player',{timeout:50000});
+		
+		    // 只爬取两页的数据
+		    /* for (let i = 0; i < 1; i++) {
+		        await sleep(3000);
+		        // 点击加载更多
+		        await page.click('.more')
+		    } */
+		
+		    // 结果
+		    const result = await page.evaluate(() => {
+		        // 拿到页面上的jQuery
+		        var $ = window.$;
+		        var items = $('#player');
+				console.log(items);
+		        // var links = [];
+		
+		        /* if (items.length >= 1) {
+		            items.each((index,item)=>{
+		                let it = $(item)
+		                let doubanId = it.find('div').data('id')
+		
+		                let title = it.find('img').attr('alt')
+		                let rate = Number(it.find('strong').text())
+		                let poster = it.find('img').attr('src')
+		
+		                links.push({
+		                    doubanId,
+		                    title,
+		                    rate,
+		                    poster
+		                })
+		            });
+		        } */
+		        // return links
+		    });
+		
+		    // 关闭浏览器
+		    brower.close();
+		
+		    // console.log(result);
+		   
+		})();
+		/* async () => {
+		  const browser = await (puppeteer.launch({
+		      // 若是手动下载的chromium需要指定chromium地址, 默认引用地址为 /项目目录/node_modules/puppeteer/.local-chromium/
+		      executablePath: '../node_modules/_puppeteer@1.20.0@puppeteer/.local-chromium/win64-686378/chrome-win/chrome.exe',
+		      //设置超时时间
+		      timeout: 15000,
+		      //如果是访问https页面 此属性会忽略https错误
+		      ignoreHTTPSErrors: true,
+		      // 打开开发者工具, 当此值为true时, headless总为false
+		      devtools: false,
+		      // 关闭headless模式, 不会打开浏览器
+		      headless: false
+		    }));
+		  const page = await browser.newPage();
+		
+		  // 进入页面
+		  await page.goto(url);
+		
+		  // 获取页面标题
+		  let title = await page.title();
+		  console.log(title);
+		
+		  // 获取汽车品牌
+		//   const BRANDS_INFO_SELECTOR = '.dd-all.clearfix.js-brand.js-option-hid-info';
+		//   const brands = await page.evaluate(sel => {
+		//     const ulList = Array.from($(sel).find('ul li p a'));
+		//     const ctn = ulList.map(v => {
+		//       return v.innerText.replace(/\s/g, '');
+		//     });
+		//     return ctn;
+		//   }, BRANDS_INFO_SELECTOR);
+		//   console.log('汽车品牌: ', JSON.stringify(brands));
+		//   let writerStream = fs.createWriteStream('car_brands.json');
+		//   writerStream.write(JSON.stringify(brands, undefined, 2), 'UTF8');
+		//   writerStream.end();
+		//   // await bodyHandle.dispose();
+		
+		//   // 获取车源列表
+		//   const CAR_LIST_SELECTOR = 'ul.carlist';
+		//   const carList = await page.evaluate((sel) => {
+		//     const catBoxs = Array.from($(sel).find('li a'));
+		//     const ctn = catBoxs.map(v => {
+		//       const title = $(v).find('h2.t').text();
+		//       const subTitle = $(v).find('div.t-i').text().split('|');
+		//       return {
+		//         title: title,
+		//         year: subTitle[0],
+		//         milemeter: subTitle[1]
+		//       };
+		//     });
+		//     return ctn;
+		//   }, CAR_LIST_SELECTOR);
+		
+		  console.log(page);
+		
+		  // 将车辆信息写入文件
+		  // writerStream = fs.createWriteStream('car_info_list.json');
+		  // writerStream.write(JSON.stringify(carList, undefined, 2), 'UTF8');
+		  // writerStream.end();
+		 await page.screenshot({path: 'example.png'});
 
+		  browser.close();
+		} */
+	} catch (e) {
+		res.send(errorRequest());
+	}	
+};
+/******************************bimi-api******************************************************/
 //新增,推荐动漫
 exports.addRecommend = function(req, res) {
 	var result = [];
