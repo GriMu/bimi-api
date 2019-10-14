@@ -257,7 +257,7 @@
 		  </p>
 		  <ul>
 		  	<li>animateid <code>String</code> 动漫标识</li>
-			<li>season <code>String</code> 季度</li>
+			<li>season <code>String</code> 播放路线 DanmuC/DanmuG</li>
 			<li>playnum <code>String</code> 第几集</li>
 		  </ul>
 		  <p>
@@ -297,6 +297,36 @@
 		  </ul>
 		  <p>
 		    示例: <a href="/searchByKeyWord?page=1&keyword=火影" target="_blank">/searchByKeyWord</a>
+		  </p>
+		  
+		  <hr>
+		  <h3>播放信息</h3>
+		  <h4>GET: /animatePlayByPT</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="http://www.bimibimi.tv/bangumi/97/play/1/61/" target="_blank">http://www.bimibimi.tv/bangumi/97/play/1/61/</a>
+		  </p>
+		  <ul>
+		  	<li>animateid <code>String</code> 动漫标识</li>
+			<li>season <code>String</code> 播放路线 DanmuC/DanmuG</li>
+			<li>playnum <code>String</code> 第几集</li>
+		  </ul>
+		  <p>
+		    示例: <a href="/animatePlayByPT" target="_blank">/animatePlayByPT</a>
+		  </p>
+		  
+		  <hr>
+		  <h3>动漫播放地址</h3>
+		  <h4>GET: /animateGetRealUrl</h4>
+		  <p>
+		    对于BimiBimi动漫页面:
+		    <a href="" target="_blank">暂无</a>
+		  </p>
+		  <ul>
+		    <li>relurl <code>String</code> 解析地址</li>
+		  </ul>
+		  <p>
+		    示例: <a href="/animateGetRealUrl?relurl=http://119.23.209.33/static/danmu/bit.php?/play/MzYwXzE1NzA5NTI4MzEyNDAwMzg5" target="_blank">/animateGetRealUrl</a>
 		  </p>
         </div>
       </div>
