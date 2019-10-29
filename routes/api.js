@@ -1731,7 +1731,9 @@ exports.animateGetRealUrl = function(req, res) {
 	var videotypes = ['MP4','mp4','AVI','avi','MOV','mov','RMVB','rmvb','RM','rm','FLV','flv','3GP','3gp'];
 	try {
 		request(relurl, function(error, response, body) {
-			if (!error && response.statusCode == 200) {
+			//console.log("error"+error);
+			//console.log("response:"+response.statusCode);
+			if (!error && (response.statusCode == 200 ||response.statusCode == 302)) {
 				var $ = cheerio.load(body);
 				var playurl = $("#video").find("source").attr("src");
 				var vflag = false;
