@@ -2,7 +2,10 @@ var request = require("request");
 var cheerio = require("cheerio");
 var Iconv = require('iconv-lite');
 const puppeteer = require('puppeteer');
-
+var https = require('https');
+const MAX_WSE = 4;  //启动几个浏览器 
+let WSE_LIST = []; //存储browserWSEndpoint列表
+// init();
 //轮播图
 // http://www.bimibimi.tv/template/bimibimi_pc/images/grey.png --等待加载图
 exports.carousel = function(req, res) {
@@ -1564,24 +1567,38 @@ exports.animatePlayByPT = function(req, res) {
 		 const sleep = time => new Promise(resolve => {
 		     setTimeout(resolve, time);
 		 })
+		 // let tmp = Math.floor(Math.random()* MAX_WSE);
 		// const url1 = 'https://movie.douban.com/explore#!type=movie&tag=%E7%BB%8F%E5%85%B8&sort=rank&page_limit=20&page_start=0';
 		;(async() => {
-			try {
-				console.log('Start visit');
-				let starttime = new Date().getTime();
-				// 启动一个浏览器
-				const brower = await puppeteer.launch({
-					args: ['--no-sandbox'],
+			console.log('Start visit');
+			let starttime = new Date().getTime();
+			// 启动一个浏览器
+			const brower = await puppeteer.launch({
+					args: ['--no-sandbox',
+							'–disable-gpu',
+							'–disable-dev-shm-usage',
+							'–disable-setuid-sandbox',
+							'–no-first-run',
+							'–no-sandbox',
+							'–no-zygote',
+							'–single-process'],
 					dumpio: false
 				});
-			
+			try {
+				
+				// let browserWSEndpoint = WSE_LIST[tmp];
+				// const browser = await puppeteer.connect({browserWSEndpoint});
 				const page = await brower.newPage()   // 开启一个新页面
 				// 去豆瓣那个页面
 				await page.goto(url, {
 					waitUntil: 'networkidle2'  // 网络空闲说明已加载完毕
 				});
-			
-				await sleep(3000);
+				// 设置页面大小
+				/* await page.setViewport({
+				            width: 600,
+				            height: 400
+				        }); */
+				await sleep(500);
 				// console.log(page)
 				// 页面加载更多按钮出现
 				await page.waitForSelector('#playleft');
@@ -1690,14 +1707,16 @@ exports.animatePlayByPT = function(req, res) {
 					// return links
 				});
 				
-				// 关闭浏览器
-				brower.close();
 				res.send(result);
 				let endtime = new Date().getTime();
 				console.log("请求耗时："+(endtime-starttime));
 			} catch (e) {
 				res.send(errorRequest());
 			}
+			finally{
+				// 关闭浏览器
+				brower.close();
+			} 
 		})();
 	} catch (e) {
 		res.send(errorRequest());
@@ -1709,13 +1728,41 @@ exports.animateGetRealUrl = function(req, res) {
 	var result = {};
 	var relurl = req.query.relurl || "";//动漫标识
 	console.log(relurl);
+	var videotypes = ['MP4','mp4','AVI','avi','MOV','mov','RMVB','rmvb','RM','rm','FLV','flv','3GP','3gp'];
 	try {
 		request(relurl, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				result.playurl = $("#video").find("source").attr("src");
+				var playurl = $("#video").find("source").attr("src");
+				var vflag = false;
+				// console.log(videotypes.length);
+				for (var i = 0; i < videotypes.length; i++) {
+					if(playurl.indexOf(videotypes[i])!=-1){
+						vflag = true;
+						break;
+					}
+				}
 				result.type = $("#video").find("source").attr("type");
-				res.send(result);
+				// console.log(vflag);
+				if(vflag){
+					result.playurl = playurl;
+					res.send(result);
+				}
+				else{
+					httprequest3(playurl).then(function(req) {
+						if(req!=null&&req!=""&&req!=undefined&&req.indexOf("http")!=-1){
+							req = req.substring(req.indexOf("http"),req.length);
+							result.playurl = req;
+						}
+						res.send(result);
+					})	
+					/* request(playurl, function(error, response, body) {
+						var $ = cheerio.load(body);
+						console.log(body);
+						res.send(body);
+					}); */	
+				}
+				
 			} else {
 				res.send(errorRequest());
 			}	
@@ -2296,10 +2343,63 @@ function httprequest2(wyuri) {
 
 };
 
+function httprequest3(reurl) {
+	return new Promise((resolve, reject) => {
+		try {
+			var host = reurl.substring(reurl.indexOf("//")+2,find(reurl,"/",2));
+			console.log(host);
+			var url = reurl;
+			var option={
+				hostname:host,
+				path:url,
+				headers:{
+				  'Accept':'*/*',
+				  'Accept-Encoding':'utf-8',  //这里设置返回的编码方式 设置其他的会是乱码
+				  'Accept-Language':'zh-CN,zh;q=0.8',
+				  'Connection':'keep-alive',
+				  'Host':host,
+				  
+				}
+			};
+			https.get(option,function(res){
+			  var chunks = [];
+			  res.on('data',function(chunk){
+			    chunks.push(chunk);
+			  })
+			  res.on('end',function(){
+			    console.log(Buffer.concat(chunks).toString());
+				resolve(Buffer.concat(chunks).toString());
+			  }) 
+			})
+		} catch (e) {
+			 console.log(e);
+		}	
+	});
+};
 function find(str,cha,num){
     var x=str.indexOf(cha);
     for(var i=0;i<num;i++){
         x=str.indexOf(cha,x+1);
     }
     return x;
+}
+
+function init(){
+    (async () => {
+        for(var i=0;i<MAX_WSE;i++){
+            const browser = await puppeteer.launch({headless:true,
+                args: [
+                '--disable-gpu',
+                '--disable-dev-shm-usage',
+                '--disable-setuid-sandbox',
+                '--no-first-run',
+                '--no-sandbox',
+                '--no-zygote',
+                '--single-process'
+            ]});
+            browserWSEndpoint = await browser.wsEndpoint();
+            WSE_LIST[i] = browserWSEndpoint;
+        }
+        console.log(WSE_LIST);
+    })(); 
 }
