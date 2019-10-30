@@ -15,17 +15,22 @@ exports.carousel = function(req, res) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
 				var carouselHtml = $(".banner-box");
-				carouselHtml.find("li").map(function(i, v) {
-					var umguri = $(v).find("img").attr("src");
-					if (umguri.indexOf("http") == -1) {
-						umguri = "http://www.bimibimi.tv" + umguri;
-					}
-					result.push({
-						img: umguri,
-						url: "http://www.bimibimi.tv" + $(v).find("a").attr("href"),
-						title: $(v).find("img").attr("alt")
+				if(!isnull(carouselHtml)){
+					carouselHtml.find("li").map(function(i, v) {
+						var umguri = "";
+						if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("src"))){
+							umguri = $(v).find("img").attr("src");
+							if (umguri.indexOf("http") == -1) {
+								umguri = "http://www.bimibimi.tv" + umguri;
+							}
+						}
+						result.push({
+							img: umguri,
+							url: (isnull($(v).find("a"))?"":"http://www.bimibimi.tv" + $(v).find("a").attr("href")),
+							title: (isnull($(v).find("img"))?"":$(v).find("img").attr("alt"))
+						});
 					});
-				});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -45,18 +50,23 @@ exports.sliderRecom = function(req, res) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
 				var sliderrecomHtml = $(".slider-menu");
-				sliderrecomHtml.find("li").map(function(i, v) {
-					var umguri = $(v).find("img").attr("src");
-					if (umguri.indexOf("http") == -1) {
-						umguri = "http://www.bimibimi.tv" + umguri;
-					}
-					result.push({
-						img: umguri,
-						url: "http://www.bimibimi.tv" + $(v).find("a").attr("href"),
-						title: $(v).find("img").attr("alt"),
-						number: $(v).find(".text-box span").text()
+				if(!isnull(sliderrecomHtml)){
+					sliderrecomHtml.find("li").map(function(i, v) {
+						var umguri = "";
+						if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("src"))){
+							umguri = $(v).find("img").attr("src");
+							if (umguri.indexOf("http") == -1) {
+								umguri = "http://www.bimibimi.tv" + umguri;
+							}
+						}	
+						result.push({
+							img: umguri,
+							url: (isnull($(v).find("a"))?"":"http://www.bimibimi.tv" + $(v).find("a").attr("href")),
+							title: (isnull($(v).find("img"))?"":$(v).find("img").attr("alt")),
+							number: (isnull($(v).find(".text-box span"))?"":$(v).find(".text-box span").text())
+						});
 					});
-				});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -75,49 +85,55 @@ exports.weekUpdate = function(req, res) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
 				var weekUpdatesHtml = $(".tab-cont__wrap");
-				weekUpdatesHtml.find(".item").map(function(i, v) {
-					var updateList = [];
-					$(v).find(".bangumi-item").map(function(i, v) {
-						var umguri = $(v).find("img").attr("src");
-						if (umguri.indexOf("http") == -1) {
-							umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull(weekUpdatesHtml)){
+					weekUpdatesHtml.find(".item").map(function(i, v) {
+						var updateList = [];
+						$(v).find(".bangumi-item").map(function(i, v) {
+							var umguri = "";
+							if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("src"))){
+								umguri = $(v).find("img").attr("src");
+								if (umguri.indexOf("http") == -1) {
+									umguri = "http://www.bimibimi.tv" + umguri;
+								}
+							}	
+							
+							updateList.push({
+								updateDate: (isnull($(v).find("span"))?"":$(v).find("span").text()),
+								name: (isnull($(v).find(".item-info a"))?"":$(v).find(".item-info a").text()),
+								url: (isnull($(v).find(".item-info a"))?"":"http://www.bimibimi.tv" + $(v).find(".item-info a").attr("href")),
+								img: umguri,
+							});
+						});
+						var week = '';
+						switch (i + 1) {
+							case 1:
+								week = "一";
+								break;
+							case 2:
+								week = "二";
+								break;
+							case 3:
+								week = "三";
+								break;
+							case 4:
+								week = "四";
+								break;
+							case 5:
+								week = "五";
+								break;
+							case 6:
+								week = "六";
+								break;
+							case 7:
+								week = "日";
+								break;
 						}
-						updateList.push({
-							updateDate: $(v).find("span").text(),
-							name: $(v).find(".item-info a").text(),
-							url: "http://www.bimibimi.tv" + $(v).find(".item-info a").attr("href"),
-							img: umguri,
+						result.push({
+							week: week,
+							list: updateList
 						});
 					});
-					var week = '';
-					switch (i + 1) {
-						case 1:
-							week = "一";
-							break;
-						case 2:
-							week = "二";
-							break;
-						case 3:
-							week = "三";
-							break;
-						case 4:
-							week = "四";
-							break;
-						case 5:
-							week = "五";
-							break;
-						case 6:
-							week = "六";
-							break;
-						case 7:
-							week = "日";
-							break;
-					}
-					result.push({
-						week: week,
-						list: updateList
-					});
-				});
+				}	
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -137,19 +153,26 @@ exports.todayHot = function(req, res) {
 		request("http://www.bimibimi.tv/", function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				var todayhotHtml = $(".drama-module").eq(0);
-				todayhotHtml.find("li").map(function(i, v) {
-					var umguri = $(v).find("img").attr("data-original");
-					if (umguri.indexOf("http") == -1) {
-						umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($(".drama-module"))){
+					var todayhotHtml = $(".drama-module").eq(0);
+					if(!isnull(todayhotHtml)){
+						todayhotHtml.find("li").map(function(i, v) {
+							var umguri = "";
+							if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+								umguri = $(v).find("img").attr("data-original");
+								if (umguri.indexOf("http") == -1) {
+									umguri = "http://www.bimibimi.tv" + umguri;
+								}
+							}
+							result.push({
+								img: umguri,
+								url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+								title: (isnull($(v).find("img"))?"":$(v).find("img").attr("alt")),
+								number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text())
+							});
+						});
 					}
-					result.push({
-						img: umguri,
-						url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-						title: $(v).find("img").attr("alt"),
-						number: $(v).find(".info span").text()
-					});
-				});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -169,14 +192,16 @@ exports.monthRank = function(req, res) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
 				var monthrankHtml = $(".rank-content");
-				monthrankHtml.find("li").map(function(i, v) {
-					result.push({
-						rank: $(v).find("i").text(),
-						url: "http://www.bimibimi.tv" + $(v).find("a").attr("href"),
-						title: $(v).find("a").attr("title"),
-						number: $(v).find("span").text()
+				if(!isnull(monthrankHtml)){
+					monthrankHtml.find("li").map(function(i, v) {
+						result.push({
+							rank: (isnull($(v).find("i"))?"":$(v).find("i").text()),
+							url: (isnull($(v).find("a"))?"":"http://www.bimibimi.tv" + $(v).find("a").attr("href")),
+							title: (isnull($(v).find("a"))?"":$(v).find("a").attr("title")),
+							number: (isnull($(v).find("span"))?"":$(v).find("span").text())
+						});
 					});
-				});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -195,19 +220,27 @@ exports.newAnimate = function(req, res) {
 		request("http://www.bimibimi.tv/", function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				var newAnimateHtml = $(".drama-module").eq(1);
-				newAnimateHtml.find("li").map(function(i, v) {
-					var umguri = $(v).find("img").attr("data-original");
-					if (umguri.indexOf("http") == -1) {
-						umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($(".drama-module"))){
+					var newAnimateHtml = $(".drama-module").eq(1);
+					if(!isnull(newAnimateHtml)){
+						newAnimateHtml.find("li").map(function(i, v) {
+							var umguri = "";
+							if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+								umguri = $(v).find("img").attr("data-original");
+								if (umguri.indexOf("http") == -1) {
+									umguri = "http://www.bimibimi.tv" + umguri;
+								}
+							}
+							
+							result.push({
+								img: umguri,
+								url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+								title: (isnull($(v).find("img"))?"":$(v).find("img").attr("alt")),
+								number: (isnull($(v).find("span"))?"":$(v).find("span").text())
+							});
+						});
 					}
-					result.push({
-						img: umguri,
-						url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-						title: $(v).find("img").attr("alt"),
-						number: $(v).find(".info span").text()
-					});
-				});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -226,19 +259,26 @@ exports.chinaAnimate = function(req, res) {
 		request("http://www.bimibimi.tv/", function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				var chinaAnimateHtml = $(".drama-module").eq(2);
-				chinaAnimateHtml.find("li").map(function(i, v) {
-					var umguri = $(v).find("img").attr("data-original");
-					if (umguri.indexOf("http") == -1) {
-						umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($(".drama-module"))){
+					var chinaAnimateHtml = $(".drama-module").eq(2);
+					if(!isnull(chinaAnimateHtml)){
+						chinaAnimateHtml.find("li").map(function(i, v) {
+							var umguri = "";
+							if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+								umguri = $(v).find("img").attr("data-original");
+								if (umguri.indexOf("http") == -1) {
+									umguri = "http://www.bimibimi.tv" + umguri;
+								}
+							}	
+							result.push({
+								img: umguri,
+								url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+								title: (isnull($(v).find("img"))?"":$(v).find("img").attr("alt")),
+								number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+							});
+						});
 					}
-					result.push({
-						img: umguri,
-						url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-						title: $(v).find("img").attr("alt"),
-						number: $(v).find(".info span").text()
-					});
-				});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -257,19 +297,26 @@ exports.animatePlan = function(req, res) {
 		request("http://www.bimibimi.tv/", function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				var animatePlanHtml = $(".drama-module").eq(3);
-				animatePlanHtml.find("li").map(function(i, v) {
-					var umguri = $(v).find("img").attr("data-original");
-					if (umguri.indexOf("http") == -1) {
-						umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($(".drama-module"))){
+					var animatePlanHtml = $(".drama-module").eq(3);
+					if(!isnull(animatePlanHtml)){
+						animatePlanHtml.find("li").map(function(i, v) {
+							var umguri = "";
+							if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+								umguri = $(v).find("img").attr("data-original");
+								if (umguri.indexOf("http") == -1) {
+									umguri = "http://www.bimibimi.tv" + umguri;
+								}
+							}	
+							result.push({
+								img: umguri,
+								url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+								title: (isnull($(v).find("img"))?"":$(v).find("img").attr("alt")),
+								number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+							});
+						});
 					}
-					result.push({
-						img: umguri,
-						url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-						title: $(v).find("img").attr("alt"),
-						number: $(v).find(".info span").text()
-					});
-				});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -287,19 +334,26 @@ exports.animateMovie = function(req, res) {
 		request("http://www.bimibimi.tv/", function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				var animateMovieHtml = $(".drama-module").eq(4);
-				animateMovieHtml.find("li").map(function(i, v) {
-					var umguri = $(v).find("img").attr("data-original");
-					if (umguri.indexOf("http") == -1) {
-						umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($(".drama-module"))){
+					var animateMovieHtml = $(".drama-module").eq(4);
+					if(!isnull(animateMovieHtml)){
+						animateMovieHtml.find("li").map(function(i, v) {
+							var umguri = "";
+							if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+								umguri = $(v).find("img").attr("data-original");
+								if (umguri.indexOf("http") == -1) {
+									umguri = "http://www.bimibimi.tv" + umguri;
+								}
+							}	
+							result.push({
+								img: umguri,
+								url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+								title: (isnull($(v).find("img").attr("alt"))?"":$(v).find("img").attr("alt")),
+								info: (isnull($(v).find(".info span").text())?"":$(v).find(".info span").text())
+							});
+						});
 					}
-					result.push({
-						img: umguri,
-						url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-						title: $(v).find("img").attr("alt"),
-						info: $(v).find(".info span").text()
-					});
-				});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -318,19 +372,26 @@ exports.Movies = function(req, res) {
 		request("http://www.bimibimi.tv/", function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				var moviesHtml = $(".drama-module").eq(5);
-				moviesHtml.find("li").map(function(i, v) {
-					var umguri = $(v).find("img").attr("data-original");
-					if (umguri.indexOf("http") == -1) {
-						umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($(".drama-module"))){
+					var moviesHtml = $(".drama-module").eq(5);
+					if(!isnull(moviesHtml)){
+						moviesHtml.find("li").map(function(i, v) {
+							var umguri = "";
+							if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+								umguri = $(v).find("img").attr("data-original");
+								if (umguri.indexOf("http") == -1) {
+									umguri = "http://www.bimibimi.tv" + umguri;
+								}
+							}	
+							result.push({
+								img: umguri,
+								url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+								title: (isnull($(v).find("img"))?"":$(v).find("img").attr("alt")),
+								info: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text())
+							});
+						});	
 					}
-					result.push({
-						img: umguri,
-						url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-						title: $(v).find("img").attr("alt"),
-						info: $(v).find(".info span").text()
-					});
-				});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -381,84 +442,103 @@ exports.yearAnimateList = function(req, res) {
 				var $ = cheerio.load(body);
 				var count;
 				//尾页如果没有href表示最后一页
-				var lasturi = $("#long-page li").last().find("a").attr("href");
-				if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
-					var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
-					var findex = find(wyuri,"-",7);//第八次和第九次之间的就是总共的页数
-					var lindex = find(wyuri,"-",8);
-					var tpage = wyuri.substring(findex+1, lindex); //总共多少页
-					httprequest2(wyuri).then(function(req) {
-						console.log("最后一页的数量" + req);
-						count = (tpage - 1) * 24 + parseInt(req);
-						console.log("总共多少条" + count);
-						// count = $(".v_num em").text(); //新番总量
-						if (count != null && count != "" && count != undefined && count != "0") {
-							count = parseInt(count);
-							var totalPage = 0;
-							if (count % pageSize == 0) {
-								totalPage = count / pageSize;
-							} else {
-								totalPage = parseInt(count / pageSize) + 1;
-							}
-							result.totalCount = count;
-							result.totalPage = totalPage;
-							result.lastPage = page == totalPage;
-							result.firstPage = page == 1;
-							if (count > 0) {
-								$(".drama-module li").map(function(i, v) {
-									var umguri = $(v).find("img").attr("data-original");
-									if (umguri.indexOf("http") == -1) {
-										umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($("#long-page li"))){
+					var lasturi = $("#long-page li").last().find("a").attr("href");
+					// console.log("lasturi:"+lasturi);
+					if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
+						if(!isnull($("#long-page a"))&&!isnull($("#long-page a").last().attr("href"))){
+							var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
+							var findex = find(wyuri,"-",7);//第八次和第九次之间的就是总共的页数
+							var lindex = find(wyuri,"-",8);
+							var tpage = wyuri.substring(findex+1, lindex); //总共多少页
+							httprequest2(wyuri).then(function(req) {
+								console.log("最后一页的数量" + req);
+								count = (tpage - 1) * 24 + parseInt(req);
+								console.log("总共多少条" + count);
+								// count = $(".v_num em").text(); //新番总量
+								if (count != null && count != "" && count != undefined && count != "0") {
+									count = parseInt(count);
+									var totalPage = 0;
+									if (count % pageSize == 0) {
+										totalPage = count / pageSize;
+									} else {
+										totalPage = parseInt(count / pageSize) + 1;
 									}
-									result.list.push({
-										url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-										img: umguri,
-										name: $(v).find(".info a").attr("title"),
-										info: $(v).find(".mask p").text(),
-										number: $(v).find(".info span").text(),
-									});
-								});
-							}
-							res.send(result);
-						}
-					})	
-				}
-				else {
-					count = $(".drama-module li").length;
-					var tpage = parseInt($("#long-page .active span").text()); //总共多少页
-					console.log("总共多少页" + count);
-					count = (tpage - 1) * 24 + parseInt(count);
-					console.log("总共多少条" + count);
-					if (count != null && count != "" && count != undefined && count != "0") {
-						count = parseInt(count);
-						var totalPage = 0;
-						if (count % pageSize == 0) {
-							totalPage = count / pageSize;
-						} else {
-							totalPage = parseInt(count / pageSize) + 1;
-						}
-						result.totalCount = count;
-						result.totalPage = totalPage;
-						result.lastPage = page == totalPage;
-						result.firstPage = page == 1;
-						if (count > 0) {
-							$(".drama-module li").map(function(i, v) {
-								var umguri = $(v).find("img").attr("data-original");
-								if (umguri.indexOf("http") == -1) {
-									umguri = "http://www.bimibimi.tv" + umguri;
+									result.totalCount = count;
+									result.totalPage = totalPage;
+									result.lastPage = page == totalPage;
+									result.firstPage = page == 1;
+									if (count > 0) {
+										$(".drama-module li").map(function(i, v) {
+											var umguri = "";
+											if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+												umguri = $(v).find("img").attr("data-original");
+												if (umguri.indexOf("http") == -1) {
+													umguri = "http://www.bimibimi.tv" + umguri;
+												}
+											}	
+											result.list.push({
+												url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+												img: umguri,
+												name: (isnull($(v).find(".info a"))?"":$(v).find(".info a").attr("title")),
+												info: (isnull($(v).find(".mask p"))?"":$(v).find(".mask p").text()),
+												number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+											});
+										});
+									}
+									res.send(result);
 								}
-								result.list.push({
-									url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-									img: umguri,
-									name: $(v).find(".info a").attr("title"),
-									info: $(v).find(".mask p").text(),
-									number: $(v).find(".info span").text(),
-								});
-							});
+							})
 						}
-						res.send(result);
 					}
-				}	
+					else {
+						count =0;
+						if(!isnull($(".drama-module li"))){
+							count = $(".drama-module li").length;
+							var tpage = 0;
+							if(!isnull($("#long-page .active span"))){
+								tpage = parseInt($("#long-page .active span").text()); //总共多少页
+							}
+							 
+							console.log("总共多少页" + count);
+							count = (tpage - 1) * 24 + parseInt(count);
+							console.log("总共多少条" + count);
+							if (count != null && count != "" && count != undefined && count != "0") {
+								count = parseInt(count);
+								var totalPage = 0;
+								if (count % pageSize == 0) {
+									totalPage = count / pageSize;
+								} else {
+									totalPage = parseInt(count / pageSize) + 1;
+								}
+								result.totalCount = count;
+								result.totalPage = totalPage;
+								result.lastPage = page == totalPage;
+								result.firstPage = page == 1;
+								if (count > 0) {
+									$(".drama-module li").map(function(i, v) {
+										var umguri = "";
+										if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+											umguri = $(v).find("img").attr("data-original");
+											if (umguri.indexOf("http") == -1) {
+												umguri = "http://www.bimibimi.tv" + umguri;
+											}
+										}	
+										result.list.push({
+											url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+											img: umguri,
+											name: (isnull($(v).find(".info a"))?"":$(v).find(".info a").attr("title")),
+											info: (isnull($(v).find(".mask p"))?"":$(v).find(".mask p").text()),
+											number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+										});
+									});
+								}
+								res.send(result);
+							}
+						}
+					}
+				}
+				// res.send(result);
 			} else {
 				res.send(errorRequest());
 			}
@@ -508,84 +588,100 @@ exports.guoManAnimateList = function(req, res) {
 				var $ = cheerio.load(body);
 				var count;
 				//尾页如果没有href表示最后一页
-				var lasturi = $("#long-page li").last().find("a").attr("href");
-				if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
-					var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
-					var findex = find(wyuri,"-",7);//第八次和第九次之间的就是总共的页数
-					var lindex = find(wyuri,"-",8);
-					var tpage = wyuri.substring(findex+1, lindex); //总共多少页
-					httprequest2(wyuri).then(function(req) {
-						console.log("最后一页的数量" + req);
-						count = (tpage - 1) * 24 + parseInt(req);
-						console.log("总共多少条" + count);
-						// count = $(".v_num em").text(); //新番总量
-						if (count != null && count != "" && count != undefined && count != "0") {
-							count = parseInt(count);
-							var totalPage = 0;
-							if (count % pageSize == 0) {
-								totalPage = count / pageSize;
-							} else {
-								totalPage = parseInt(count / pageSize) + 1;
-							}
-							result.totalCount = count;
-							result.totalPage = totalPage;
-							result.lastPage = page == totalPage;
-							result.firstPage = page == 1;
-							if (count > 0) {
-								$(".drama-module li").map(function(i, v) {
-									var umguri = $(v).find("img").attr("data-original");
-									if (umguri.indexOf("http") == -1) {
-										umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($("#long-page li"))){
+					var lasturi = $("#long-page li").last().find("a").attr("href");
+					if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
+						if(!isnull($("#long-page a"))&&!isnull($("#long-page a").last().attr("href"))){
+							var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
+							var findex = find(wyuri,"-",7);//第八次和第九次之间的就是总共的页数
+							var lindex = find(wyuri,"-",8);
+							var tpage = wyuri.substring(findex+1, lindex); //总共多少页
+							httprequest2(wyuri).then(function(req) {
+								console.log("最后一页的数量" + req);
+								count = (tpage - 1) * 24 + parseInt(req);
+								console.log("总共多少条" + count);
+								// count = $(".v_num em").text(); //新番总量
+								if (count != null && count != "" && count != undefined && count != "0") {
+									count = parseInt(count);
+									var totalPage = 0;
+									if (count % pageSize == 0) {
+										totalPage = count / pageSize;
+									} else {
+										totalPage = parseInt(count / pageSize) + 1;
 									}
-									result.list.push({
-										url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-										img: umguri,
-										name: $(v).find(".info a").attr("title"),
-										info: $(v).find(".mask p").text(),
-										number: $(v).find(".info span").text(),
-									});
-								});
-							}
-							res.send(result);
-						}
-					})	
-				}
-				else {
-					count = $(".drama-module li").length;
-					var tpage = parseInt($("#long-page .active span").text()); //总共多少页
-					console.log("总共多少页" + count);
-					count = (tpage - 1) * 24 + parseInt(count);
-					console.log("总共多少条" + count);
-					if (count != null && count != "" && count != undefined && count != "0") {
-						count = parseInt(count);
-						var totalPage = 0;
-						if (count % pageSize == 0) {
-							totalPage = count / pageSize;
-						} else {
-							totalPage = parseInt(count / pageSize) + 1;
-						}
-						result.totalCount = count;
-						result.totalPage = totalPage;
-						result.lastPage = page == totalPage;
-						result.firstPage = page == 1;
-						if (count > 0) {
-							$(".drama-module li").map(function(i, v) {
-								var umguri = $(v).find("img").attr("data-original");
-								if (umguri.indexOf("http") == -1) {
-									umguri = "http://www.bimibimi.tv" + umguri;
+									result.totalCount = count;
+									result.totalPage = totalPage;
+									result.lastPage = page == totalPage;
+									result.firstPage = page == 1;
+									if (count > 0) {
+										$(".drama-module li").map(function(i, v) {
+											var umguri = "";
+											if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+												umguri = $(v).find("img").attr("data-original");
+												if (umguri.indexOf("http") == -1) {
+													umguri = "http://www.bimibimi.tv" + umguri;
+												}
+											}	
+											result.list.push({
+												url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+												img: umguri,
+												name: (isnull($(v).find(".info a"))?"":$(v).find(".info a").attr("title")),
+												info: (isnull($(v).find(".mask p"))?"":$(v).find(".mask p").text()),
+												number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+											});
+										});
+									}
+									res.send(result);
 								}
-								result.list.push({
-									url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-									img: umguri,
-									name: $(v).find(".info a").attr("title"),
-									info: $(v).find(".mask p").text(),
-									number: $(v).find(".info span").text(),
-								});
-							});
-						}
-						res.send(result);
+							})
+						}	
 					}
-				}	
+					else {
+						count =0;
+						if(!isnull($(".drama-module li"))){
+							count = $(".drama-module li").length;
+							var tpage = 0;
+							if(!isnull($("#long-page .active span"))){
+								tpage = parseInt($("#long-page .active span").text()); //总共多少页
+							}	
+							console.log("总共多少页" + count);
+							count = (tpage - 1) * 24 + parseInt(count);
+							console.log("总共多少条" + count);
+							if (count != null && count != "" && count != undefined && count != "0") {
+								count = parseInt(count);
+								var totalPage = 0;
+								if (count % pageSize == 0) {
+									totalPage = count / pageSize;
+								} else {
+									totalPage = parseInt(count / pageSize) + 1;
+								}
+								result.totalCount = count;
+								result.totalPage = totalPage;
+								result.lastPage = page == totalPage;
+								result.firstPage = page == 1;
+								if (count > 0) {
+									$(".drama-module li").map(function(i, v) {
+										var umguri = "";
+										if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+											umguri = $(v).find("img").attr("data-original");
+											if (umguri.indexOf("http") == -1) {
+												umguri = "http://www.bimibimi.tv" + umguri;
+											}
+										}	
+										result.list.push({
+											url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+											img: umguri,
+											name: (isnull($(v).find(".info a"))?"":$(v).find(".info a").attr("title")),
+											info: (isnull($(v).find(".mask p"))?"":$(v).find(".mask p").text()),
+											number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+										});
+									});
+								}
+								res.send(result);
+							}
+						}	
+					}
+				}
 			} else {
 				res.send(errorRequest());
 			}
@@ -635,82 +731,99 @@ exports.fanZuAnimateList = function(req, res) {
 				var $ = cheerio.load(body);
 				var count;
 				//尾页如果没有href表示最后一页
-				var lasturi = $("#long-page li").last().find("a").attr("href");
-				if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
-					var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
-					var findex = find(wyuri,"-",7);//第八次和第九次之间的就是总共的页数
-					var lindex = find(wyuri,"-",8);
-					var tpage = wyuri.substring(findex+1, lindex); //总共多少页
-					httprequest2(wyuri).then(function(req) {
-						console.log("最后一页的数量" + req);
-						count = (tpage - 1) * 24 + parseInt(req);
-						console.log("总共多少条" + count);
-						// count = $(".v_num em").text(); //新番总量
-						if (count != null && count != "" && count != undefined && count != "0") {
-							count = parseInt(count);
-							var totalPage = 0;
-							if (count % pageSize == 0) {
-								totalPage = count / pageSize;
-							} else {
-								totalPage = parseInt(count / pageSize) + 1;
-							}
-							result.totalCount = count;
-							result.totalPage = totalPage;
-							result.lastPage = page == totalPage;
-							result.firstPage = page == 1;
-							if (count > 0) {
-								$(".drama-module li").map(function(i, v) {
-									var umguri = $(v).find("img").attr("data-original");
-									if (umguri.indexOf("http") == -1) {
-										umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($("#long-page li"))){
+					var lasturi = $("#long-page li").last().find("a").attr("href");
+					if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
+						if(!isnull($("#long-page a"))&&!isnull($("#long-page a").last().attr("href"))){
+							var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
+							var findex = find(wyuri,"-",7);//第八次和第九次之间的就是总共的页数
+							var lindex = find(wyuri,"-",8);
+							var tpage = wyuri.substring(findex+1, lindex); //总共多少页
+							httprequest2(wyuri).then(function(req) {
+								console.log("最后一页的数量" + req);
+								count = (tpage - 1) * 24 + parseInt(req);
+								console.log("总共多少条" + count);
+								// count = $(".v_num em").text(); //新番总量
+								if (count != null && count != "" && count != undefined && count != "0") {
+									count = parseInt(count);
+									var totalPage = 0;
+									if (count % pageSize == 0) {
+										totalPage = count / pageSize;
+									} else {
+										totalPage = parseInt(count / pageSize) + 1;
 									}
-									result.list.push({
-										url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-										img: umguri,
-										name: $(v).find(".info a").attr("title"),
-										info: $(v).find(".mask p").text(),
-										number: $(v).find(".info span").text(),
-									});
-								});
-							}
-							res.send(result);
-						}
-					})	
-				}
-				else {
-					count = $(".drama-module li").length;
-					var tpage = parseInt($("#long-page .active span").text()); //总共多少页
-					console.log("总共多少页" + count);
-					count = (tpage - 1) * 24 + parseInt(count);
-					console.log("总共多少条" + count);
-					if (count != null && count != "" && count != undefined && count != "0") {
-						count = parseInt(count);
-						var totalPage = 0;
-						if (count % pageSize == 0) {
-							totalPage = count / pageSize;
-						} else {
-							totalPage = parseInt(count / pageSize) + 1;
-						}
-						result.totalCount = count;
-						result.totalPage = totalPage;
-						result.lastPage = page == totalPage;
-						result.firstPage = page == 1;
-						if (count > 0) {
-							$(".drama-module li").map(function(i, v) {
-								var umguri = $(v).find("img").attr("data-original");
-								if (umguri.indexOf("http") == -1) {
-									umguri = "http://www.bimibimi.tv" + umguri;
+									result.totalCount = count;
+									result.totalPage = totalPage;
+									result.lastPage = page == totalPage;
+									result.firstPage = page == 1;
+									if (count > 0) {
+										$(".drama-module li").map(function(i, v) {
+											var umguri = "";
+											if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+												umguri = $(v).find("img").attr("data-original");
+												if (umguri.indexOf("http") == -1) {
+													umguri = "http://www.bimibimi.tv" + umguri;
+												}
+											}	
+											result.list.push({
+												url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+												img: umguri,
+												name: (isnull($(v).find(".info a"))?"":$(v).find(".info a").attr("title")),
+												info: (isnull($(v).find(".mask p"))?"":$(v).find(".mask p").text()),
+												number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+											});
+										});
+									}
+									res.send(result);
 								}
-								result.list.push({
-									url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-									img: umguri,
-									name: $(v).find(".info a").attr("title"),
-									info: $(v).find(".mask p").text(),
-									number: $(v).find(".info span").text(),
-								});
-							});
-						}
-						res.send(result);
+							})
+						}	
+					}
+					else {
+						count =0;
+						if(!isnull($(".drama-module li"))){
+							count = $(".drama-module li").length;
+							var tpage = 0;
+							if(!isnull($("#long-page .active span"))){
+								tpage = parseInt($("#long-page .active span").text()); //总共多少页
+							}	
+							console.log("总共多少页" + count);
+							count = (tpage - 1) * 24 + parseInt(count);
+							console.log("总共多少条" + count);
+							if (count != null && count != "" && count != undefined && count != "0") {
+								count = parseInt(count);
+								var totalPage = 0;
+								if (count % pageSize == 0) {
+									totalPage = count / pageSize;
+								} else {
+									totalPage = parseInt(count / pageSize) + 1;
+								}
+								result.totalCount = count;
+								result.totalPage = totalPage;
+								result.lastPage = page == totalPage;
+								result.firstPage = page == 1;
+								if (count > 0) {
+									$(".drama-module li").map(function(i, v) {
+										var umguri = "";
+										if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+											umguri = $(v).find("img").attr("data-original");
+											if (umguri.indexOf("http") == -1) {
+												umguri = "http://www.bimibimi.tv" + umguri;
+											}
+										}	
+										
+										result.list.push({
+											url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+											img: umguri,
+											name: (isnull($(v).find(".info a"))?"":$(v).find(".info a").attr("title")),
+											info: (isnull($(v).find(".mask p"))?"":$(v).find(".mask p").text()),
+											number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+										});
+									});
+								}
+								res.send(result);
+							}
+						}	
 					}
 				}	
 			} else {
@@ -762,84 +875,100 @@ exports.juChangAnimateList = function(req, res) {
 				var $ = cheerio.load(body);
 				var count;
 				//尾页如果没有href表示最后一页
-				var lasturi = $("#long-page li").last().find("a").attr("href");
-				if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
-					var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
-					var findex = find(wyuri,"-",7);//第八次和第九次之间的就是总共的页数
-					var lindex = find(wyuri,"-",8);
-					var tpage = wyuri.substring(findex+1, lindex); //总共多少页
-					httprequest2(wyuri).then(function(req) {
-						console.log("最后一页的数量" + req);
-						count = (tpage - 1) * 24 + parseInt(req);
-						console.log("总共多少条" + count);
-						// count = $(".v_num em").text(); //新番总量
-						if (count != null && count != "" && count != undefined && count != "0") {
-							count = parseInt(count);
-							var totalPage = 0;
-							if (count % pageSize == 0) {
-								totalPage = count / pageSize;
-							} else {
-								totalPage = parseInt(count / pageSize) + 1;
-							}
-							result.totalCount = count;
-							result.totalPage = totalPage;
-							result.lastPage = page == totalPage;
-							result.firstPage = page == 1;
-							if (count > 0) {
-								$(".drama-module li").map(function(i, v) {
-									var umguri = $(v).find("img").attr("data-original");
-									if (umguri.indexOf("http") == -1) {
-										umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($("#long-page li"))){
+					var lasturi = $("#long-page li").last().find("a").attr("href");
+					if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
+						if(!isnull($("#long-page a"))&&!isnull($("#long-page a").last().attr("href"))){
+							var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
+							var findex = find(wyuri,"-",7);//第八次和第九次之间的就是总共的页数
+							var lindex = find(wyuri,"-",8);
+							var tpage = wyuri.substring(findex+1, lindex); //总共多少页
+							httprequest2(wyuri).then(function(req) {
+								console.log("最后一页的数量" + req);
+								count = (tpage - 1) * 24 + parseInt(req);
+								console.log("总共多少条" + count);
+								// count = $(".v_num em").text(); //新番总量
+								if (count != null && count != "" && count != undefined && count != "0") {
+									count = parseInt(count);
+									var totalPage = 0;
+									if (count % pageSize == 0) {
+										totalPage = count / pageSize;
+									} else {
+										totalPage = parseInt(count / pageSize) + 1;
 									}
-									result.list.push({
-										url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-										img: umguri,
-										name: $(v).find(".info a").attr("title"),
-										info: $(v).find(".mask p").text(),
-										number: $(v).find(".info span").text(),
-									});
-								});
-							}
-							res.send(result);
-						}
-					})	
-				}
-				else {
-					count = $(".drama-module li").length;
-					var tpage = parseInt($("#long-page .active span").text()); //总共多少页
-					console.log("总共多少页" + count);
-					count = (tpage - 1) * 24 + parseInt(count);
-					console.log("总共多少条" + count);
-					if (count != null && count != "" && count != undefined && count != "0") {
-						count = parseInt(count);
-						var totalPage = 0;
-						if (count % pageSize == 0) {
-							totalPage = count / pageSize;
-						} else {
-							totalPage = parseInt(count / pageSize) + 1;
-						}
-						result.totalCount = count;
-						result.totalPage = totalPage;
-						result.lastPage = page == totalPage;
-						result.firstPage = page == 1;
-						if (count > 0) {
-							$(".drama-module li").map(function(i, v) {
-								var umguri = $(v).find("img").attr("data-original");
-								if (umguri.indexOf("http") == -1) {
-									umguri = "http://www.bimibimi.tv" + umguri;
+									result.totalCount = count;
+									result.totalPage = totalPage;
+									result.lastPage = page == totalPage;
+									result.firstPage = page == 1;
+									if (count > 0) {
+										$(".drama-module li").map(function(i, v) {
+											var umguri = "";
+											if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+												umguri = $(v).find("img").attr("data-original");
+												if (umguri.indexOf("http") == -1) {
+													umguri = "http://www.bimibimi.tv" + umguri;
+												}
+											}	
+											result.list.push({
+												url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+												img: umguri,
+												name: (isnull($(v).find(".info a"))?"":$(v).find(".info a").attr("title")),
+												info: (isnull($(v).find(".mask p"))?"":$(v).find(".mask p").text()),
+												number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+											});
+										});
+									}
+									res.send(result);
 								}
-								result.list.push({
-									url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-									img: umguri,
-									name: $(v).find(".info a").attr("title"),
-									info: $(v).find(".mask p").text(),
-									number: $(v).find(".info span").text(),
-								});
-							});
-						}
-						res.send(result);
+							})
+						}	
 					}
-				}	
+					else {
+						count =0;
+						if(!isnull($(".drama-module li"))){
+							count = $(".drama-module li").length;
+							var tpage = 0;
+							if(!isnull($("#long-page .active span"))){
+								tpage = parseInt($("#long-page .active span").text()); //总共多少页
+							}
+							console.log("总共多少页" + count);
+							count = (tpage - 1) * 24 + parseInt(count);
+							console.log("总共多少条" + count);
+							if (count != null && count != "" && count != undefined && count != "0") {
+								count = parseInt(count);
+								var totalPage = 0;
+								if (count % pageSize == 0) {
+									totalPage = count / pageSize;
+								} else {
+									totalPage = parseInt(count / pageSize) + 1;
+								}
+								result.totalCount = count;
+								result.totalPage = totalPage;
+								result.lastPage = page == totalPage;
+								result.firstPage = page == 1;
+								if (count > 0) {
+									$(".drama-module li").map(function(i, v) {
+										var umguri = "";
+										if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+											umguri = $(v).find("img").attr("data-original");
+											if (umguri.indexOf("http") == -1) {
+												umguri = "http://www.bimibimi.tv" + umguri;
+											}
+										}	
+										result.list.push({
+											url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+											img: umguri,
+											name: (isnull($(v).find(".info a"))?"":$(v).find(".info a").attr("title")),
+											info: (isnull($(v).find(".mask p"))?"":$(v).find(".mask p").text()),
+											number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+										});
+									});
+								}
+								res.send(result);
+							}
+						}	
+					}
+				}
 			} else {
 				res.send(errorRequest());
 			}
@@ -889,84 +1018,100 @@ exports.moveAnimateList = function(req, res) {
 				var $ = cheerio.load(body);
 				var count;
 				//尾页如果没有href表示最后一页
-				var lasturi = $("#long-page li").last().find("a").attr("href");
-				if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
-					var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
-					var findex = find(wyuri,"-",7);//第八次和第九次之间的就是总共的页数
-					var lindex = find(wyuri,"-",8);
-					var tpage = wyuri.substring(findex+1, lindex); //总共多少页
-					httprequest2(wyuri).then(function(req) {
-						console.log("最后一页的数量" + req);
-						count = (tpage - 1) * 24 + parseInt(req);
-						console.log("总共多少条" + count);
-						// count = $(".v_num em").text(); //新番总量
-						if (count != null && count != "" && count != undefined && count != "0") {
-							count = parseInt(count);
-							var totalPage = 0;
-							if (count % pageSize == 0) {
-								totalPage = count / pageSize;
-							} else {
-								totalPage = parseInt(count / pageSize) + 1;
-							}
-							result.totalCount = count;
-							result.totalPage = totalPage;
-							result.lastPage = page == totalPage;
-							result.firstPage = page == 1;
-							if (count > 0) {
-								$(".drama-module li").map(function(i, v) {
-									var umguri = $(v).find("img").attr("data-original");
-									if (umguri.indexOf("http") == -1) {
-										umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($("#long-page li"))){
+					var lasturi = $("#long-page li").last().find("a").attr("href");
+					if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
+						if(!isnull($("#long-page a"))&&!isnull($("#long-page a").last().attr("href"))){
+							var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
+							var findex = find(wyuri,"-",7);//第八次和第九次之间的就是总共的页数
+							var lindex = find(wyuri,"-",8);
+							var tpage = wyuri.substring(findex+1, lindex); //总共多少页
+							httprequest2(wyuri).then(function(req) {
+								console.log("最后一页的数量" + req);
+								count = (tpage - 1) * 24 + parseInt(req);
+								console.log("总共多少条" + count);
+								// count = $(".v_num em").text(); //新番总量
+								if (count != null && count != "" && count != undefined && count != "0") {
+									count = parseInt(count);
+									var totalPage = 0;
+									if (count % pageSize == 0) {
+										totalPage = count / pageSize;
+									} else {
+										totalPage = parseInt(count / pageSize) + 1;
 									}
-									result.list.push({
-										url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-										img: umguri,
-										name: $(v).find(".info a").attr("title"),
-										info: $(v).find(".mask p").text(),
-										number: $(v).find(".info span").text(),
-									});
-								});
-							}
-							res.send(result);
-						}
-					})	
-				}
-				else {
-					count = $(".drama-module li").length;
-					var tpage = parseInt($("#long-page .active span").text()); //总共多少页
-					console.log("总共多少页" + count);
-					count = (tpage - 1) * 24 + parseInt(count);
-					console.log("总共多少条" + count);
-					if (count != null && count != "" && count != undefined && count != "0") {
-						count = parseInt(count);
-						var totalPage = 0;
-						if (count % pageSize == 0) {
-							totalPage = count / pageSize;
-						} else {
-							totalPage = parseInt(count / pageSize) + 1;
-						}
-						result.totalCount = count;
-						result.totalPage = totalPage;
-						result.lastPage = page == totalPage;
-						result.firstPage = page == 1;
-						if (count > 0) {
-							$(".drama-module li").map(function(i, v) {
-								var umguri = $(v).find("img").attr("data-original");
-								if (umguri.indexOf("http") == -1) {
-									umguri = "http://www.bimibimi.tv" + umguri;
+									result.totalCount = count;
+									result.totalPage = totalPage;
+									result.lastPage = page == totalPage;
+									result.firstPage = page == 1;
+									if (count > 0) {
+										$(".drama-module li").map(function(i, v) {
+											var umguri = "";
+											if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+												umguri = $(v).find("img").attr("data-original");
+												if (umguri.indexOf("http") == -1) {
+													umguri = "http://www.bimibimi.tv" + umguri;
+												}
+											}	
+											result.list.push({
+												url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+												img: umguri,
+												name: (isnull($(v).find(".info a"))?"":$(v).find(".info a").attr("title")),
+												info: (isnull($(v).find(".mask p"))?"":$(v).find(".mask p").text()),
+												number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+											});
+										});
+									}
+									res.send(result);
 								}
-								result.list.push({
-									url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-									img: umguri,
-									name: $(v).find(".info a").attr("title"),
-									info: $(v).find(".mask p").text(),
-									number: $(v).find(".info span").text(),
-								});
-							});
-						}
-						res.send(result);
+							})
+						}	
 					}
-				}	
+					else {
+						count =0;
+						if(!isnull($(".drama-module li"))){
+							count = $(".drama-module li").length;
+							var tpage = 0;
+							if(!isnull($("#long-page .active span"))){
+								tpage = parseInt($("#long-page .active span").text()); //总共多少页
+							}	
+							console.log("总共多少页" + count);
+							count = (tpage - 1) * 24 + parseInt(count);
+							console.log("总共多少条" + count);
+							if (count != null && count != "" && count != undefined && count != "0") {
+								count = parseInt(count);
+								var totalPage = 0;
+								if (count % pageSize == 0) {
+									totalPage = count / pageSize;
+								} else {
+									totalPage = parseInt(count / pageSize) + 1;
+								}
+								result.totalCount = count;
+								result.totalPage = totalPage;
+								result.lastPage = page == totalPage;
+								result.firstPage = page == 1;
+								if (count > 0) {
+									$(".drama-module li").map(function(i, v) {
+										var umguri = "";
+										if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+											umguri = $(v).find("img").attr("data-original");
+											if (umguri.indexOf("http") == -1) {
+												umguri = "http://www.bimibimi.tv" + umguri;
+											}
+										}	
+										result.list.push({
+											url: (isnull($(v).find(".info a"))?"":"http://www.bimibimi.tv" + $(v).find(".info a").attr("href")),
+											img: umguri,
+											name: (isnull($(v).find(".info a"))?"":$(v).find(".info a").attr("title")),
+											info: (isnull($(v).find(".mask p"))?"":$(v).find(".mask p").text()),
+											number: (isnull($(v).find(".info span"))?"":$(v).find(".info span").text()),
+										});
+									});
+								}
+								res.send(result);
+							}
+						}	
+					}
+				}
 			} else {
 				res.send(errorRequest());
 			}
@@ -1001,79 +1146,94 @@ exports.zixun = function(req, res) {
 				var count;
 				// console.log($("#long-page").find("a").length);
 				//尾页如果没有href表示最后一页
-				var lasturi = $("#long-page li").last().find("a").attr("href");
-				if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
-					var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
-					var tpage = wyuri.substring(wyuri.indexOf("-") + 1, wyuri.length - 1); //总共多少页
-					httprequest(wyuri).then(function(req) {
-						console.log("最后一页的数量" + req);
-						count = (tpage - 1) * 30 + parseInt(req);
-						console.log("总共多少条" + count);
-						if (count != null && count != "" && count != undefined && count != "0") {
-							count = parseInt(count);
-							var totalPage = 0;
-							if (count % pageSize == 0) {
-								totalPage = count / pageSize;
-							} else {
-								totalPage = parseInt(count / pageSize) + 1;
-							}
-							result.totalCount = count;
-							result.totalPage = totalPage;
-							result.lastPage = page == totalPage;
-							result.firstPage = page == 1;
-							if (count > 0) {
-								$(".list_module_img li").map(function(i, v) {
-									var umguri = $(v).find("img").attr("src");
-									if (umguri.indexOf("http") == -1) {
-										umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($("#long-page li"))){
+					var lasturi = $("#long-page li").last().find("a").attr("href");
+					if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
+						if(!isnull($("#long-page a"))&&!isnull($("#long-page a").last().attr("href"))){
+							var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
+							var tpage = wyuri.substring(wyuri.indexOf("-") + 1, wyuri.length - 1); //总共多少页
+							httprequest(wyuri).then(function(req) {
+								console.log("最后一页的数量" + req);
+								count = (tpage - 1) * 30 + parseInt(req);
+								console.log("总共多少条" + count);
+								if (count != null && count != "" && count != undefined && count != "0") {
+									count = parseInt(count);
+									var totalPage = 0;
+									if (count % pageSize == 0) {
+										totalPage = count / pageSize;
+									} else {
+										totalPage = parseInt(count / pageSize) + 1;
 									}
-									result.list.push({
-										url: "http://www.bimibimi.tv" + $(v).find(".news-info a").attr("href"),
-										img: umguri,
-										title: $(v).find(".news-info a").attr("title"),
-										publistime: $(v).find(".news-info span").text(),
-										info: $(v).find(".news-info p").text(),
-									});
-								});
-							}
-							res.send(result);
-						}
-					})
-
-				} else {
-					count = $(".list_module_img li").length;
-					var tpage = parseInt($("#long-page .active span").text()); //总共多少页
-					console.log("总共多少页" + count);
-					count = (tpage - 1) * 30 + parseInt(count);
-					console.log("总共多少条" + count);
-					if (count != null && count != "" && count != undefined && count != "0") {
-						count = parseInt(count);
-						var totalPage = 0;
-						if (count % pageSize == 0) {
-							totalPage = count / pageSize;
-						} else {
-							totalPage = parseInt(count / pageSize) + 1;
-						}
-						result.totalCount = count;
-						result.totalPage = totalPage;
-						result.lastPage = page == totalPage;
-						result.firstPage = page == 1;
-						if (count > 0) {
-							$(".list_module_img li").map(function(i, v) {
-								var umguri = $(v).find("img").attr("src");
-								if (umguri.indexOf("http") == -1) {
-									umguri = "http://www.bimibimi.tv" + umguri;
+									result.totalCount = count;
+									result.totalPage = totalPage;
+									result.lastPage = page == totalPage;
+									result.firstPage = page == 1;
+									if (count > 0) {
+										$(".list_module_img li").map(function(i, v) {
+											var umguri = "";
+											if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("src"))){
+												umguri = $(v).find("img").attr("src");
+												if (umguri.indexOf("http") == -1) {
+													umguri = "http://www.bimibimi.tv" + umguri;
+												}
+											}
+											result.list.push({
+												url: (isnull($(v).find(".news-info a"))?"":"http://www.bimibimi.tv" + $(v).find(".news-info a").attr("href")),
+												img: umguri,
+												title: (isnull($(v).find(".news-info a"))?"":$(v).find(".news-info a").attr("title")),
+												publistime: (isnull($(v).find(".news-info span"))?"":$(v).find(".news-info span").text()),
+												info: (isnull($(v).find(".news-info p"))?"":$(v).find(".news-info p").text()),
+											});
+										});
+									}
+									res.send(result);
 								}
-								result.list.push({
-									url: "http://www.bimibimi.tv" + $(v).find(".news-info a").attr("href"),
-									img: umguri,
-									title: $(v).find(".news-info a").attr("title"),
-									publistime: $(v).find(".news-info span").text(),
-									info: $(v).find(".news-info p").text(),
-								});
-							});
-						}
-						res.send(result);
+							})
+						}	
+					} else {
+						count =0;
+						if(!isnull($(".list_module_img li"))){
+							count = $(".list_module_img li").length;
+							var tpage = 0;
+							if(!isnull($("#long-page .active span"))){
+								tpage = parseInt($("#long-page .active span").text()); //总共多少页
+							}	
+							console.log("总共多少页" + count);
+							count = (tpage - 1) * 30 + parseInt(count);
+							console.log("总共多少条" + count);
+							if (count != null && count != "" && count != undefined && count != "0") {
+								count = parseInt(count);
+								var totalPage = 0;
+								if (count % pageSize == 0) {
+									totalPage = count / pageSize;
+								} else {
+									totalPage = parseInt(count / pageSize) + 1;
+								}
+								result.totalCount = count;
+								result.totalPage = totalPage;
+								result.lastPage = page == totalPage;
+								result.firstPage = page == 1;
+								if (count > 0) {
+									$(".list_module_img li").map(function(i, v) {
+										var umguri = "";
+										if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("src"))){
+											umguri = $(v).find("img").attr("src");
+											if (umguri.indexOf("http") == -1) {
+												umguri = "http://www.bimibimi.tv" + umguri;
+											}
+										}	
+										result.list.push({
+											url: (isnull($(v).find(".news-info a"))?"":"http://www.bimibimi.tv" + $(v).find(".news-info a").attr("href")),
+											img: umguri,
+											title: (isnull($(v).find(".news-info a"))?"":$(v).find(".news-info a").attr("title")),
+											publistime: (isnull($(v).find(".news-info span"))?"":$(v).find(".news-info span").text()),
+											info: (isnull($(v).find(".news-info p"))?"":$(v).find(".news-info p").text()),
+										});
+									});
+								}
+								res.send(result);
+							}
+						}	
 					}
 				}
 			} else {
@@ -1098,13 +1258,13 @@ exports.artDetail = function(req, res) {
 		request(url, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				result.title= $(".news-title h1").text();
-				result.source= $(".news-title .news-inf span").eq(0).text();
-				result.autor= $(".news-title .news-inf span").eq(1).text();
-				result.updatetime= $(".news-title .news-inf span").eq(2).text();
-				result.hits= $(".news-title .news-inf span").eq(3).text();//人气
+				result.title= (isnull($(".news-title h1"))?"":$(".news-title h1").text());
+				result.source= (isnull($(".news-title .news-inf span"))?"":$(".news-title .news-inf span").eq(0).text());
+				result.autor= (isnull($(".news-title .news-inf span"))?"":$(".news-title .news-inf span").eq(1).text());
+				result.updatetime= (isnull($(".news-title .news-inf span"))?"":$(".news-title .news-inf span").eq(2).text());
+				result.hits= (isnull($(".news-title .news-inf span"))?"":$(".news-title .news-inf span").eq(3).text());//人气
 				// console.log($(".news-data").innerHTML());
-				result.newsinfo= $(".news-data").text();
+				result.newsinfo= (isnull($(".news-data"))?"":$(".news-data").text());
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -1190,10 +1350,13 @@ exports.animateDetail = function(req, res) {
 				}
 				result.playlist= plists;//播放列表
 				$(".drama-module li").map(function(i, v) {
-					var umguri = $(v).find("img").attr("data-original");
-					if (umguri.indexOf("http") == -1) {
-						umguri = "http://www.bimibimi.tv" + umguri;
-					}
+					var umguri = "";
+					if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+						umguri = $(v).find("img").attr("data-original");
+						if (umguri.indexOf("http") == -1) {
+							umguri = "http://www.bimibimi.tv" + umguri;
+						}
+					}	
 					recommendlist.push({
 						url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
 						img: umguri,
@@ -1298,25 +1461,30 @@ exports.latestShowAnimate = function(req, res) {
 		request(url, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				$(".serach-ul li").map(function(i, v) {
-					var umguri = $(v).find("img").attr("src");
-					if (umguri.indexOf("http") == -1) {
-						umguri = "http://www.bimibimi.tv" + umguri;
-					}
-					result.push({
-						url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-						img: umguri,
-						name: $(v).find(".info a").text(),
-						score: $(v).find(".score").text(),//评分
-						updatenums: $(v).find(".title").text(),//更新集数
-						director: $(v).find(".info p").eq(0).find("on").text(),//导演
-						showdate: $(v).find(".info p").eq(1).text(),//上映时间
-						mainactor: $(v).find(".info p").eq(2).find("span").text(),//主演
-						sort: $(v).find(".info p").eq(3).text(),//类型
-						area: $(v).find(".info p").eq(4).text(),//地区
-						plot: $(v).find(".info p").eq(6).text(),//剧情
+				if(!isnull($(".serach-ul li"))){
+					$(".serach-ul li").map(function(i, v) {
+						var umguri = "";
+						if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("src"))){
+							umguri = $(v).find("img").attr("src");
+							if (umguri.indexOf("http") == -1) {
+								umguri = "http://www.bimibimi.tv" + umguri;
+							}
+						}	
+						result.push({
+							url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
+							img: umguri,
+							name: $(v).find(".info a").text(),
+							score: $(v).find(".score").text(),//评分
+							updatenums: $(v).find(".title").text(),//更新集数
+							director: $(v).find(".info p").eq(0).find("on").text(),//导演
+							showdate: $(v).find(".info p").eq(1).text(),//上映时间
+							mainactor: $(v).find(".info p").eq(2).find("span").text(),//主演
+							sort: $(v).find(".info p").eq(3).text(),//类型
+							area: $(v).find(".info p").eq(4).text(),//地区
+							plot: $(v).find(".info p").eq(6).text(),//剧情
+						});
 					});
-				});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -1344,77 +1512,82 @@ exports.animateRank = function(req, res) {
 		request(url, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
-				$(".top-r .top-item").map(function(i, v) {
-					var htitle = $(v).find(".top-title h2").text();
-					console.log(htitle);
-					$(v).find(".top-list li").map(function(j, k) {
-						if (htitle == "新番放送排行榜") {
-							newAnimateRank.push({
-								url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
-								rank: $(k).find("span").eq(0).text(),
-								title: $(k).find("span").eq(1).text(),
-								score: $(k).find("span").eq(2).text(),
-							});
-							result.newAnimateRank = newAnimateRank;
-						} else if (htitle == "国产动漫排行榜") {
-							chinaAnimateRank.push({
-								url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
-								rank: $(k).find("span").eq(0).text(),
-								title: $(k).find("span").eq(1).text(),
-								score: $(k).find("span").eq(2).text(),
-							});
-							result.chinaAnimateRank = chinaAnimateRank;
-						} else if (htitle == "番组计划排行榜") {
-							animatePlanRank.push({
-								url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
-								rank: $(k).find("span").eq(0).text(),
-								title: $(k).find("span").eq(1).text(),
-								score: $(k).find("span").eq(2).text(),
-							});
-							result.animatePlanRank = animatePlanRank;
-						} else if (htitle == "剧场动画排行榜") {
-							movieAnimateRank.push({
-								url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
-								rank: $(k).find("span").eq(0).text(),
-								title: $(k).find("span").eq(1).text(),
-								score: $(k).find("span").eq(2).text(),
-							});
-							result.movieAnimateRank = movieAnimateRank;
-						} else if (htitle == "新番放送评分榜") {
-							newAnimateScore.push({
-								url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
-								rank: $(k).find("span").eq(0).text(),
-								title: $(k).find("span").eq(1).text(),
-								score: $(k).find("span").eq(2).text(),
-							});
-							result.newAnimateScore = newAnimateScore;
-						} else if (htitle == "国产动漫评分榜") {
-							chinaAnimateScore.push({
-								url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
-								rank: $(k).find("span").eq(0).text(),
-								title: $(k).find("span").eq(1).text(),
-								score: $(k).find("span").eq(2).text(),
-							});
-							result.chinaAnimateScore = chinaAnimateScore;
-						} else if (htitle == "番组计划评分榜") {
-							animatePlanScore.push({
-								url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
-								rank: $(k).find("span").eq(0).text(),
-								title: $(k).find("span").eq(1).text(),
-								score: $(k).find("span").eq(2).text(),
-							});
-							result.animatePlanScore = animatePlanScore;
-						} else if (htitle == "剧场动画评分榜") {
-							movieAnimateScore.push({
-								url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
-								rank: $(k).find("span").eq(0).text(),
-								title: $(k).find("span").eq(1).text(),
-								score: $(k).find("span").eq(2).text(),
-							});
-							result.movieAnimateScore = movieAnimateScore;
+				if(!isnull($(".top-r .top-item"))){
+					$(".top-r .top-item").map(function(i, v) {
+						var htitle = "";
+						if(!isnull($(v).find(".top-title h2"))){
+							htitle = $(v).find(".top-title h2").text();
 						}
-					});	
-				});
+						console.log(htitle);
+						$(v).find(".top-list li").map(function(j, k) {
+							if (htitle == "新番放送排行榜") {
+								newAnimateRank.push({
+									url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
+									rank: $(k).find("span").eq(0).text(),
+									title: $(k).find("span").eq(1).text(),
+									score: $(k).find("span").eq(2).text(),
+								});
+								result.newAnimateRank = newAnimateRank;
+							} else if (htitle == "国产动漫排行榜") {
+								chinaAnimateRank.push({
+									url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
+									rank: $(k).find("span").eq(0).text(),
+									title: $(k).find("span").eq(1).text(),
+									score: $(k).find("span").eq(2).text(),
+								});
+								result.chinaAnimateRank = chinaAnimateRank;
+							} else if (htitle == "番组计划排行榜") {
+								animatePlanRank.push({
+									url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
+									rank: $(k).find("span").eq(0).text(),
+									title: $(k).find("span").eq(1).text(),
+									score: $(k).find("span").eq(2).text(),
+								});
+								result.animatePlanRank = animatePlanRank;
+							} else if (htitle == "剧场动画排行榜") {
+								movieAnimateRank.push({
+									url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
+									rank: $(k).find("span").eq(0).text(),
+									title: $(k).find("span").eq(1).text(),
+									score: $(k).find("span").eq(2).text(),
+								});
+								result.movieAnimateRank = movieAnimateRank;
+							} else if (htitle == "新番放送评分榜") {
+								newAnimateScore.push({
+									url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
+									rank: $(k).find("span").eq(0).text(),
+									title: $(k).find("span").eq(1).text(),
+									score: $(k).find("span").eq(2).text(),
+								});
+								result.newAnimateScore = newAnimateScore;
+							} else if (htitle == "国产动漫评分榜") {
+								chinaAnimateScore.push({
+									url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
+									rank: $(k).find("span").eq(0).text(),
+									title: $(k).find("span").eq(1).text(),
+									score: $(k).find("span").eq(2).text(),
+								});
+								result.chinaAnimateScore = chinaAnimateScore;
+							} else if (htitle == "番组计划评分榜") {
+								animatePlanScore.push({
+									url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
+									rank: $(k).find("span").eq(0).text(),
+									title: $(k).find("span").eq(1).text(),
+									score: $(k).find("span").eq(2).text(),
+								});
+								result.animatePlanScore = animatePlanScore;
+							} else if (htitle == "剧场动画评分榜") {
+								movieAnimateScore.push({
+									url: "http://www.bimibimi.tv" + $(k).find("a").attr("href"),
+									rank: $(k).find("span").eq(0).text(),
+									title: $(k).find("span").eq(1).text(),
+									score: $(k).find("span").eq(2).text(),
+								});
+								result.movieAnimateScore = movieAnimateScore;
+							}
+						});	
+					});
+				}
 				res.send(result);
 			} else {
 				res.send(errorRequest());
@@ -1461,81 +1634,96 @@ exports.searchByKeyWord = function(req, res) {
 				var count;
 				// console.log($("#long-page").find("a").length);
 				//尾页如果没有href表示最后一页
-				var lasturi = $("#long-page li").last().find("a").attr("href");
-				if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
-					var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
-					var tpage = wyuri.substring(wyuri.indexOf("page/") + 5, wyuri.length - 1); //总共多少页
-					httprequest2(wyuri).then(function(req) {
-						console.log("最后一页的数量" + req);
-						count = (tpage - 1) * 24 + parseInt(req);
-						console.log("总共多少条" + count);
-						if (count != null && count != "" && count != undefined && count != "0") {
-							count = parseInt(count);
-							var totalPage = 0;
-							if (count % pageSize == 0) {
-								totalPage = count / pageSize;
-							} else {
-								totalPage = parseInt(count / pageSize) + 1;
-							}
-							result.totalCount = count;
-							result.totalPage = totalPage;
-							result.lastPage = page == totalPage;
-							result.firstPage = page == 1;
-							if (count > 0) {
-								$(".drama-module li").map(function(i, v) {
-									var umguri = $(v).find("img").attr("data-original");
-									if (umguri.indexOf("http") == -1) {
-										umguri = "http://www.bimibimi.tv" + umguri;
+				if(!isnull($("#long-page li"))){
+					var lasturi = $("#long-page li").last().find("a").attr("href");
+					if (lasturi!=null&&lasturi!=""&&lasturi!=undefined) { //多页
+						if(!isnull($("#long-page a"))&&!isnull($("#long-page a").last().attr("href"))){
+							var wyuri = "http://www.bimibimi.tv" + $("#long-page a").last().attr("href"); //尾页uri
+							var tpage = wyuri.substring(wyuri.indexOf("page/") + 5, wyuri.length - 1); //总共多少页
+							httprequest2(wyuri).then(function(req) {
+								console.log("最后一页的数量" + req);
+								count = (tpage - 1) * 24 + parseInt(req);
+								console.log("总共多少条" + count);
+								if (count != null && count != "" && count != undefined && count != "0") {
+									count = parseInt(count);
+									var totalPage = 0;
+									if (count % pageSize == 0) {
+										totalPage = count / pageSize;
+									} else {
+										totalPage = parseInt(count / pageSize) + 1;
 									}
-									result.list.push({
-										url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-										img: umguri,
-										name: $(v).find(".info a").text(),
-										info: $(v).find(".info p span").text(),//清晰度、更新集数
-										director: $(v).find(".mask").text(),//导演
-									});
-								});
-							}
-							res.send(result);
-						}
-					})
-
-				} else {
-					count = $(".drama-module li").length;
-					var tpage = parseInt($("#long-page .active span").text()); //总共多少页
-					console.log("总共多少页" + count);
-					count = (tpage - 1) * 24 + parseInt(count);
-					console.log("总共多少条" + count);
-					if (count != null && count != "" && count != undefined && count != "0") {
-						count = parseInt(count);
-						var totalPage = 0;
-						if (count % pageSize == 0) {
-							totalPage = count / pageSize;
-						} else {
-							totalPage = parseInt(count / pageSize) + 1;
-						}
-						result.totalCount = count;
-						result.totalPage = totalPage;
-						result.lastPage = page == totalPage;
-						result.firstPage = page == 1;
-						if (count > 0) {
-							$(".drama-module li").map(function(i, v) {
-									var umguri = $(v).find("img").attr("data-original");
-									if (umguri.indexOf("http") == -1) {
-										umguri = "http://www.bimibimi.tv" + umguri;
+									result.totalCount = count;
+									result.totalPage = totalPage;
+									result.lastPage = page == totalPage;
+									result.firstPage = page == 1;
+									if (count > 0) {
+										$(".drama-module li").map(function(i, v) {
+											var umguri = "";
+											if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+												umguri = $(v).find("img").attr("data-original");
+												if (umguri.indexOf("http") == -1) {
+													umguri = "http://www.bimibimi.tv" + umguri;
+												}
+											}	
+											result.list.push({
+												url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
+												img: umguri,
+												name: $(v).find(".info a").text(),
+												info: $(v).find(".info p span").text(),//清晰度、更新集数
+												director: $(v).find(".mask").text(),//导演
+											});
+										});
 									}
-									result.list.push({
-										url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
-										img: umguri,
-										name: $(v).find(".info a").text(),
-										info: $(v).find(".info p span").text(),//清晰度、更新集数
-										director: $(v).find(".mask").text(),//导演
-									});
-								});
-						}
-						res.send(result);
+									res.send(result);
+								}
+							})
+						}	
+					} else {
+						count =0;
+						if(!isnull($(".drama-module li"))){
+							count = $(".drama-module li").length;
+							var tpage = 0;
+							if(!isnull($("#long-page .active span"))){
+								tpage = parseInt($("#long-page .active span").text()); //总共多少页
+							}	
+							console.log("总共多少页" + count);
+							count = (tpage - 1) * 24 + parseInt(count);
+							console.log("总共多少条" + count);
+							if (count != null && count != "" && count != undefined && count != "0") {
+								count = parseInt(count);
+								var totalPage = 0;
+								if (count % pageSize == 0) {
+									totalPage = count / pageSize;
+								} else {
+									totalPage = parseInt(count / pageSize) + 1;
+								}
+								result.totalCount = count;
+								result.totalPage = totalPage;
+								result.lastPage = page == totalPage;
+								result.firstPage = page == 1;
+								if (count > 0) {
+									$(".drama-module li").map(function(i, v) {
+											var umguri = "";
+											if(!isnull($(v).find("img"))&&!isnull($(v).find("img").attr("data-original"))){
+												umguri = $(v).find("img").attr("data-original");
+												if (umguri.indexOf("http") == -1) {
+													umguri = "http://www.bimibimi.tv" + umguri;
+												}
+											}
+											result.list.push({
+												url: "http://www.bimibimi.tv" + $(v).find(".info a").attr("href"),
+												img: umguri,
+												name: $(v).find(".info a").text(),
+												info: $(v).find(".info p span").text(),//清晰度、更新集数
+												director: $(v).find(".mask").text(),//导演
+											});
+										});
+								}
+								res.send(result);
+							}
+						}	
 					}
-				}
+				}	
 			} else {
 				res.send(errorRequest());
 			}	
@@ -1620,22 +1808,32 @@ exports.animatePlayByPT = function(req, res) {
 					var ret = {};
 					let uri = $("#playleft iframe").attr("src")||"没有解析到页面播放地址"
 					ret.playurl = uri;
-					var videodata = $(".player_zanpian").eq(0).text();
+					var videodata = "";
+					var playdata ="";
+					if($(".player_zanpian")!=null&&$(".player_zanpian")!=""&&$(".player_zanpian")!=undefined){
+						videodata = $(".player_zanpian").eq(0).text();
+						if(videodata!=null&&videodata!=""&&videodata!=undefined){
+							if(videodata.indexOf("=")!=-1&&videodata.indexOf(".MacPlayer")!=-1){
+								playdata = videodata.substring(videodata.indexOf("=")+1,videodata.indexOf(".MacPlayer"));
+								player_data = JSON.parse(playdata);
+								ret.player_data = player_data;
+							}
+						}
+					}
 					// console.log(videodata);
-					var playdata = videodata.substring(videodata.indexOf("=")+1,videodata.indexOf(".MacPlayer"));
 					// console.log(playdata);
-					
-					player_data = JSON.parse(playdata);
-					ret.player_data = player_data;
 					// var playnum = playnum;
 					var recommendlist = [];
 					var player_data ={};
 					ret.name= $(".v_path").find("a").last().text();
+					var playnum = "";
+					if(pageurl!=null&& pageurl!="" && pageurl!=undefined && pageurl.indexOf("play")!=-1){
+						playnum = pageurl.substring(pageurl.indexOf("play")+7,pageurl.length-1);
+						ret.curnum= playnum;//第几集
+					}
 					
-					var playnum = pageurl.substring(pageurl.indexOf("play")+7,pageurl.length-1);
-					ret.curnum= playnum;//第几集
 					
-					var plegth = $(".player_list").length;
+					/* var plegth = $(".player_list").length;
 					var plists = [];
 					
 					for (var i = 0; i < plegth; i++) {
@@ -1651,7 +1849,7 @@ exports.animatePlayByPT = function(req, res) {
 					ret.playlist= plists;//播放列表
 					
 					$(".drama-module li").map(function(i, v) {
-						var umguri = $(v).find("img").attr("data-original");
+						var umguri  = $(v).find("img").attr("data-original");
 						if (umguri.indexOf("http") == -1) {
 							umguri = "http://www.bimibimi.tv" + umguri;
 						}
@@ -1663,7 +1861,7 @@ exports.animatePlayByPT = function(req, res) {
 							views: $(v).find(".info p em").text(),//观看人数
 						});
 					});
-					ret.recommendlist= recommendlist;//相关推荐
+					ret.recommendlist= recommendlist;//相关推荐 */
 						
 					
 					
@@ -1731,40 +1929,50 @@ exports.animateGetRealUrl = function(req, res) {
 	var videotypes = ['MP4','mp4','AVI','avi','MOV','mov','RMVB','rmvb','RM','rm','FLV','flv','3GP','3gp'];
 	try {
 		request(relurl, function(error, response, body) {
-			//console.log("error"+error);
-			//console.log("response:"+response.statusCode);
+			// console.log("error"+error);
+			// console.log("response:"+response.statusCode);
+			// console.log("body:"+body);
 			if (!error && (response.statusCode == 200 ||response.statusCode == 302)) {
 				var $ = cheerio.load(body);
-				var playurl = $("#video").find("source").attr("src");
-				var vflag = false;
-				// console.log(videotypes.length);
-				for (var i = 0; i < videotypes.length; i++) {
-					if(playurl.indexOf(videotypes[i])!=-1){
-						vflag = true;
-						break;
+				if(!isnull($("#video"))){
+					var playurl = $("#video").find("source").attr("src");
+					var vflag = false;
+					// console.log(videotypes.length);
+					if(!isnull(playurl)){
+						for (var i = 0; i < videotypes.length; i++) {
+							if(playurl.indexOf(videotypes[i])!=-1){
+								vflag = true;
+								break;
+							}
+						}
+						result.type = $("#video").find("source").attr("type");
+						// console.log(vflag);
+						if(vflag){
+							result.playurl = playurl;
+							res.send(result);
+						}
+						else{
+							httprequest3(playurl).then(function(req) {
+								if(req!=null&&req!=""&&req!=undefined&&req.indexOf("http")!=-1){
+									req = req.substring(req.indexOf("http"),req.length);
+									result.playurl = req;
+								}
+								res.send(result);
+							})	
+							/* request(playurl, function(error, response, body) {
+								var $ = cheerio.load(body);
+								console.log(body);
+								res.send(body);
+							}); */	
+						}
+					}
+					else{
+						res.send(errorRequest());
 					}
 				}
-				result.type = $("#video").find("source").attr("type");
-				// console.log(vflag);
-				if(vflag){
-					result.playurl = playurl;
-					res.send(result);
-				}
 				else{
-					httprequest3(playurl).then(function(req) {
-						if(req!=null&&req!=""&&req!=undefined&&req.indexOf("http")!=-1){
-							req = req.substring(req.indexOf("http"),req.length);
-							result.playurl = req;
-						}
-						res.send(result);
-					})	
-					/* request(playurl, function(error, response, body) {
-						var $ = cheerio.load(body);
-						console.log(body);
-						res.send(body);
-					}); */	
+					res.send(errorRequest());
 				}
-				
 			} else {
 				res.send(errorRequest());
 			}	
@@ -2384,6 +2592,13 @@ function find(str,cha,num){
         x=str.indexOf(cha,x+1);
     }
     return x;
+}
+
+function isnull(str){
+    if(str==null||str==""||str==undefined){
+		return true;
+	}
+	return false;
 }
 
 function init(){
