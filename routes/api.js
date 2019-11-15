@@ -202,7 +202,14 @@ exports.monthRank = function(req, res) {
 						});
 					});
 				}
-				res.send(result);
+				(async() => {
+					for (var j = 0; j < result.length; j++) {
+						let linkuri = result[j].url;
+						let detail = await httprequest4(linkuri);
+						result[j].img = detail;
+					}
+					res.send(result);
+				})();
 			} else {
 				res.send(errorRequest());
 			}
@@ -1293,6 +1300,14 @@ exports.animateDetail = function(req, res) {
 		request(url, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(body);
+				var umguri = "";
+				if(!isnull($(".poster_placeholder img"))&&!isnull($(".poster_placeholder img").attr("data-original"))){
+					umguri = $(".poster_placeholder img").attr("data-original");
+					if (umguri.indexOf("http") == -1) {
+						umguri = "http://www.bimibimi.tv" + umguri;
+					}
+				}
+				result.img = umguri;
 				result.title= $(".txt_intro_con h1").text();
 				result.updatenums= $(".txt_intro_con .p_txt em").text();//更新集数
 				result.rember= $(".txt_list li").eq(0).find("a").text();//提醒
@@ -1526,6 +1541,7 @@ exports.animateRank = function(req, res) {
 									rank: $(k).find("span").eq(0).text(),
 									title: $(k).find("span").eq(1).text(),
 									score: $(k).find("span").eq(2).text(),
+									detail:req
 								});
 								result.newAnimateRank = newAnimateRank;
 							} else if (htitle == "国产动漫排行榜") {
@@ -1588,7 +1604,51 @@ exports.animateRank = function(req, res) {
 						});	
 					});
 				}
-				res.send(result);
+				(async() => {
+					try {
+						for (var i = 0; i < 8; i++) {
+							let animate = null;
+							switch (i){
+								case 0:
+									animate = result.newAnimateRank;
+									break;
+								case 1:
+									animate = result.chinaAnimateRank;
+									break;
+								case 2:
+									animate = result.animatePlanRank;
+									break;
+								case 3:
+									animate = result.movieAnimateRank;
+									break;
+								case 4:
+									animate = result.newAnimateScore;
+									break;
+								case 5:
+									animate = result.chinaAnimateScore;
+									break;
+								case 6:
+									animate = result.animatePlanScore;
+									break;
+								case 7:
+									animate = result.movieAnimateScore;
+									break;				
+								default:
+									break;
+							}
+							
+							for (var j = 0; j < animate.length; j++) {
+								let linkuri = animate[j].url;
+								let detail = await httprequest4(linkuri);
+								animate[j].detail = detail;
+							}
+						}
+					res.send(result);
+					} catch (e) {
+						res.send(errorRequest());
+					}
+				})();
+				
 			} else {
 				res.send(errorRequest());
 			}	
@@ -2586,6 +2646,78 @@ function httprequest3(reurl) {
 		}	
 	});
 };
+
+function httprequest4(linkuri) {
+	return new Promise((resolve, reject) => {
+		var url = linkuri;
+		var option = {
+			url: url,
+			method: "GET",
+			headers: {
+				"content-type": "application/*",
+			},
+		}
+		request(option, function(error, response, body) {
+			if (!error && response.statusCode == 200) {
+				var $ = cheerio.load(body);
+				var umguri = "";
+				if(!isnull($(".poster_placeholder img"))&&!isnull($(".poster_placeholder img").attr("data-original"))){
+					umguri = $(".poster_placeholder img").attr("data-original");
+					if (umguri.indexOf("http") == -1) {
+						umguri = "http://www.bimibimi.tv" + umguri;
+					}
+				}
+				// result.img = umguri;
+				// result.title= $(".txt_intro_con h1").text();
+				// result.updatenums= $(".txt_intro_con .p_txt em").text();//更新集数
+				// result.rember= $(".txt_list li").eq(0).find("a").text();//提醒
+				// $(".txt_list li").eq(1).find("a").map(function(i, v) {
+				// 	voicelsit.push({
+				// 		url: "http://www.bimibimi.tv/"+ $(v).attr("href"),
+				// 		voiceactor: $(v).text(),
+				// 	});
+				// });
+				// result.voicelsit= voicelsit;//声优
+				
+				// $(".txt_list li").eq(2).find("a").map(function(i, v) {
+				// 	sortlsit.push({
+				// 		url: "http://www.bimibimi.tv/"+ $(v).attr("href"),
+				// 		sort: $(v).text(),
+				// 	});
+				// });
+				// result.sortlsit= sortlsit;//类型
+				
+				// $(".txt_list li").eq(3).find("a").map(function(i, v) {
+				// 	directorlsit.push({
+				// 		url: "http://www.bimibimi.tv/"+ $(v).attr("href"),
+				// 		director: $(v).text(),
+				// 	});
+				// });
+				// result.directorlsit= directorlsit;//导演
+				
+				// result.kaibo= $(".txt_list li").eq(4).text();//开播
+				// result.year= $(".txt_list li").eq(5).text();//年份
+				
+				// $(".txt_list li").eq(6).find("a").map(function(i, v) {
+				// 	arealsit.push({
+				// 		url: "http://www.bimibimi.tv/"+ $(v).attr("href"),
+				// 		area: $(v).text(),
+				// 	});
+				// });
+				// result.arealsit= arealsit;//地区
+				
+				// result.language= $(".txt_list li").eq(7).text();//语言
+				// result.comment= $(".txt_list li").eq(8).find("span").text();//评论
+				// result.updatetime= $(".txt_list li").eq(9).text();//最近更新
+				// result.intro= $(".txt_list li").eq(10).find("p").text();//简介
+				// console.log(result);
+				resolve(umguri);
+			}
+		});
+	});
+
+};
+
 function find(str,cha,num){
     var x=str.indexOf(cha);
     for(var i=0;i<num;i++){
