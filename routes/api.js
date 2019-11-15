@@ -1514,6 +1514,7 @@ exports.latestShowAnimate = function(req, res) {
 /* http://www.bimibimi.tv/label/top/ */
 exports.animateRank = function(req, res) {
 	var url = "http://www.bimibimi.tv/label/top/";
+	var animatetype = req.query.animatetype;
 	var result = {};
 	var newAnimateRank =[];//新番放送排行榜
 	var chinaAnimateRank =[];//国产动漫排行榜
@@ -1541,7 +1542,6 @@ exports.animateRank = function(req, res) {
 									rank: $(k).find("span").eq(0).text(),
 									title: $(k).find("span").eq(1).text(),
 									score: $(k).find("span").eq(2).text(),
-									detail:req
 								});
 								result.newAnimateRank = newAnimateRank;
 							} else if (htitle == "国产动漫排行榜") {
@@ -1604,51 +1604,67 @@ exports.animateRank = function(req, res) {
 						});	
 					});
 				}
-				(async() => {
-					try {
-						for (var i = 0; i < 8; i++) {
-							let animate = null;
-							switch (i){
-								case 0:
-									animate = result.newAnimateRank;
-									break;
-								case 1:
-									animate = result.chinaAnimateRank;
-									break;
-								case 2:
-									animate = result.animatePlanRank;
-									break;
-								case 3:
-									animate = result.movieAnimateRank;
-									break;
-								case 4:
-									animate = result.newAnimateScore;
-									break;
-								case 5:
-									animate = result.chinaAnimateScore;
-									break;
-								case 6:
-									animate = result.animatePlanScore;
-									break;
-								case 7:
-									animate = result.movieAnimateScore;
-									break;				
-								default:
-									break;
-							}
-							
-							for (var j = 0; j < animate.length; j++) {
-								let linkuri = animate[j].url;
-								let detail = await httprequest4(linkuri);
-								animate[j].detail = detail;
-							}
-						}
+				if(isnull(animatetype)){
 					res.send(result);
-					} catch (e) {
-						res.send(errorRequest());
-					}
-				})();
-				
+				}else{
+					(async() => {
+						try {
+							var oneresult = {};
+							for (var i = 0; i < 8; i++) {
+								if(i==animatetype){
+									let animate = null;
+										switch (i){
+											case 0:
+												animate = result.newAnimateRank;
+												oneresult.newAnimateRank =animate;
+												break;
+											case 1:
+												animate = result.chinaAnimateRank;
+												oneresult.chinaAnimateRank =animate;
+												break;
+											case 2:
+												animate = result.animatePlanRank;
+												oneresult.animatePlanRank =animate;
+												break;
+											case 3:
+												animate = result.movieAnimateRank;
+												oneresult.movieAnimateRank =animate;
+												break;
+											case 4:
+												animate = result.newAnimateScore;
+												oneresult.newAnimateScore =animate;
+												break;
+											case 5:
+												animate = result.chinaAnimateScore;
+												oneresult.chinaAnimateScore =animate;
+												break;
+											case 6:
+												animate = result.animatePlanScore;
+												oneresult.animatePlanScore =animate;
+												break;
+											case 7:
+												animate = result.movieAnimateScore;
+												oneresult.movieAnimateScore =animate;
+												break;				
+											default:
+												break;
+										}
+										
+										for (var j = 0; j < animate.length; j++) {
+											let linkuri = animate[j].url;
+											let detail = await httprequest4(linkuri);
+											animate[j].img = detail;
+										}
+										
+									}
+									
+								}
+							res.send(oneresult);
+						} catch (e) {
+							res.send(errorRequest());
+						}
+					})();
+				}
 			} else {
 				res.send(errorRequest());
 			}	
