@@ -1546,7 +1546,7 @@ exports.animateRank = function(req, res) {
 									score: $(k).find("span").eq(2).text(),
 								});
 								result.newAnimateRank = newAnimateRank;
-							} else if (htitle == "国产动漫排行榜") {
+							} else if (htitle == "大陆动漫排行榜") {
 								chinaAnimateRank.push({
 									url: base_uri + $(k).find("a").attr("href"),
 									rank: $(k).find("span").eq(0).text(),
@@ -1578,7 +1578,7 @@ exports.animateRank = function(req, res) {
 									score: $(k).find("span").eq(2).text(),
 								});
 								result.newAnimateScore = newAnimateScore;
-							} else if (htitle == "国产动漫评分榜") {
+							} else if (htitle == "大陆动漫评分榜") {
 								chinaAnimateScore.push({
 									url: base_uri + $(k).find("a").attr("href"),
 									rank: $(k).find("span").eq(0).text(),
